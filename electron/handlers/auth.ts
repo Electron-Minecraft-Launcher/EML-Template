@@ -4,7 +4,7 @@ let isUserLoggedIn = false
 
 export function registerAuthHandlers() {
   ipcMain.handle('auth:login', async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 500))
     isUserLoggedIn = true
     return true
   })

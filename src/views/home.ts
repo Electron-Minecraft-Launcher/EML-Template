@@ -7,6 +7,7 @@ export function initHome() {
   const progressContainer = document.getElementById('progress-container')
   const progressBar = document.getElementById('progress-bar')
   const progressLabel = document.getElementById('progress-label')
+  const progressPercent = document.getElementById('progress-percent')
 
   settingsBtn?.addEventListener('click', () => setView('settings'))
 
@@ -18,9 +19,10 @@ export function initHome() {
   })
 
   onProgress((data) => {
-    if (progressBar && progressLabel) {
+    if (progressBar && progressLabel && progressPercent) {
       progressBar.style.width = `${data.percent}%`
       progressLabel.innerText = data.status
+      progressPercent.innerText = `${data.percent}%`
 
       if (data.percent >= 100) {
         setTimeout(() => {

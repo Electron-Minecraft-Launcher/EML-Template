@@ -6,7 +6,7 @@ var _documentCurrentScript = typeof document !== "undefined" ? document.currentS
 let isUserLoggedIn = false;
 function registerAuthHandlers() {
   electron.ipcMain.handle("auth:login", async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     isUserLoggedIn = true;
     return true;
   });
@@ -26,12 +26,13 @@ function registerLauncherHandlers(mainWindow2) {
       progress += 5;
       mainWindow2.webContents.send("game:progress", {
         percent: progress,
-        status: `Downloading assets... ${progress}%`
+        status: `Downloading assets...`,
+        percentComplete: progress / 100
       });
       if (progress >= 100) {
         clearInterval(interval);
       }
-    }, 300);
+    }, 200);
   });
 }
 const APP_TITLE = "My Server Launcher";

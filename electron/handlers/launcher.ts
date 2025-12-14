@@ -9,12 +9,13 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
       progress += 5
       mainWindow.webContents.send('game:progress', {
         percent: progress,
-        status: `Downloading assets... ${progress}%`
+        status: `Downloading assets...`,
+        percentComplete: progress / 100,
       })
 
       if (progress >= 100) {
         clearInterval(interval)
       }
-    }, 300)
+    }, 200)
   })
 }
