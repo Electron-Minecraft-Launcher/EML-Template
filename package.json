@@ -1,19 +1,31 @@
 {
   "name": "eml-template",
+  "productName": "EML Template",
   "author": "GoldFrite",
   "private": true,
   "version": "1.0.0",
   "license": "MIT",
-  "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder"
   },
+  "build": {
+    "appId": "com.eml.template",
+    "productName": "EML Template",
+    "copyright": "Copyright © 2025 EML",
+    "mac": {
+      "category": "public.app-category.games"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  },
   "devDependencies": {
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
     "prettier": "^3.7.4",
+    "sass-embedded": "^1.95.1",
     "typescript": "~5.9.3",
     "vite": "^7.2.4",
     "vite-plugin-electron": "^0.29.0"

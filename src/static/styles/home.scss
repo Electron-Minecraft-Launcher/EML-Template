@@ -1,0 +1,365 @@
+/* --- HOME LAYOUT --- */
+#view-home {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* --- LEFT SIDEBAR (Technical) --- */
+.home-sidebar {
+  width: var(--sidebar-width);
+  min-width: 300px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border-right: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 30px;
+  z-index: 20;
+}
+
+/* User Profile */
+.sidebar-top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  img {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+
+    #user-name {
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .rank-badge {
+      font-size: 11px;
+      color: var(--primary);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+  }
+}
+
+/* Middle area */
+
+.sidebar-middle {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 40px;
+  flex: 1;
+}
+
+.shop-item {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+
+  .shop-item-image {
+    width: 60px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .shop-item-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .item-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .item-price {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+  }
+}
+
+/* Bottom Area */
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.server-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px 16px;
+  border-radius: var(--btn-radius);
+  font-size: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4caf50;
+    box-shadow: 0 0 8px #4caf50;
+  }
+
+  .player-count {
+    color: var(--text-muted);
+  }
+}
+
+/* Play Button - Special Case */
+#btn-play {
+  width: 100%;
+  height: 60px;
+  background: var(--primary);
+  border: none;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border-radius: var(--btn-radius);
+  /* Slight radius */
+  /* Keeps the polygon shape but respects consistent font */
+  clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+  transition: all 0.2s;
+  box-shadow: var(--shadow-lg);
+
+  &:hover {
+    background: var(--primary-hover);
+    transform: scale(1.02);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.progress-container {
+  margin-top: 20px;
+  height: 40px;
+
+  &.hidden {
+    display: none;
+  }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 5px;
+    color: var(--text-muted);
+  }
+
+  .progress-bar-bg {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--primary);
+    transition: width 0.1s linear;
+  }
+}
+
+/* --- RIGHT CONTENT (News Feed) --- */
+.home-content {
+  flex: 1;
+  padding: 40px 60px;
+  /* Un peu plus de padding pour l'aération */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+
+  /* Scrollbar custom */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.news-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 10px;
+  }
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  /* Grand espace entre les articles */
+  padding-bottom: 40px;
+}
+
+/* --- MARKDOWN-LIKE ARTICLE STYLE --- */
+.news-article {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: relative;
+  background: var(--glass-bg);
+  padding: 30px;
+  border-radius: 8px;
+
+  h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    line-height: 1.3;
+  }
+
+  /* 2. Metadata: Author, Date, Tags */
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+
+    .author {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #eee;
+      font-weight: 500;
+
+      img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+
+  /* Tags Styling */
+  .tags-container {
+    display: flex;
+    gap: 8px;
+
+    .tag {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tag.update {
+      background: rgba(33, 150, 243, 0.15);
+      color: #64b5f6;
+      border: 1px solid rgba(33, 150, 243, 0.3);
+    }
+
+    .tag.event {
+      background: rgba(255, 152, 0, 0.15);
+      color: #ffb74d;
+      border: 1px solid rgba(255, 152, 0, 0.3);
+    }
+
+    .tag.info {
+      background: rgba(158, 158, 158, 0.15);
+      color: #e0e0e0;
+      border: 1px solid rgba(158, 158, 158, 0.3);
+    }
+  }
+
+  img {
+    border-radius: 5px;
+    margin-top: 5px;
+    border: 1px solid var(--glass-border);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+
+  /* 4. Content Body (Markdown style) */
+  .article-content {
+    font-size: 14px;
+    line-height: 1.7;
+    /* Bonne hauteur de ligne pour la lecture */
+    color: #f0f0f0;
+
+    /* Si tu ajoutes du vrai HTML/Markdown plus tard, ces styles aideront : */
+    strong {
+      color: white;
+    }
+
+    ul {
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+
+    a {
+      text-decoration: underline;
+    }
+  }
+}

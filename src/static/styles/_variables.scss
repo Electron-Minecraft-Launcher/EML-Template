@@ -1,0 +1,23 @@
+:root {
+  /* Colors */
+  --primary: #ff5722;
+  --primary-hover: #e64a19;
+
+  --bg-dark: url('../images/bg.png');
+  --text-main: #ffffff;
+  --text-muted: #aaaaaa;
+
+  /* Glassmorphism */
+  --glass-bg: rgba(30, 30, 30, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 12px;
+
+  /* Shadows */
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+  /* Layout */
+  --sidebar-width: 350px;
+
+  /* UI System */
+  --btn-radius: 5px;
+}

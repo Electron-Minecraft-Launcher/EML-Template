@@ -1,0 +1,197 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-main);
+  height: 100vh;
+  overflow: hidden;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+  }
+}
+
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.app-background {
+  position: absolute;
+  inset: 0;
+  background-image: url('/src/assets/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* --- Views Management --- */
+.view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+
+  &.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  &.overlay {
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+
+/* --- GLOBAL BUTTON SYSTEM --- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 20px;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+
+  border-radius: var(--btn-radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  /* Disable selection */
+  user-select: none;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/* Primary Button (Orange) */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 10px rgba(255, 87, 34, 0.3);
+
+  &:hover:not(:disabled) {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(255, 87, 34, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+/* Secondary Button (Dark/Glass) */
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ddd;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    text-decoration: none;
+  }
+}
+
+/* Danger Button (Red) */
+.btn-danger {
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.5);
+  color: #ff5252;
+
+  &:hover:not(:disabled) {
+    background: rgba(244, 67, 54, 0.2);
+    border-color: #f44336;
+  }
+}
+
+/* Icon Button (Square/Round for icons only) */
+.btn-icon-only {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  /* Circle */
+  background: transparent;
+  color: #aaa;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+  }
+}
+
+/* Link Button (Looks like text, behaves like button) */
+.btn-text {
+  background: transparent;
+  padding: 5px 10px;
+  color: var(--text-muted);
+
+  &:hover {
+    color: var(--primary);
+    background: rgba(255, 87, 34, 0.1);
+  }
+}
+
+/* Brand Button: Microsoft */
+.btn-microsoft {
+  background: #2f2f2f;
+  color: white;
+  border: 1px solid #444;
+  width: 100%;
+
+  &:hover {
+    background: #3f3f3f;
+    border-color: #666;
+  }
+}

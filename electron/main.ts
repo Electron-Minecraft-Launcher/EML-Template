@@ -1,59 +1,117 @@
-import { app, BrowserWindow } from 'electron'
-import EMLLib from 'eml-lib'
+import { app, BrowserWindow, Menu } from 'electron'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { registerAuthHandlers } from './handlers/auth'
+import { registerLauncherHandlers } from './handlers/launcher'
+
+const APP_TITLE = 'My Server Launcher'
+const BG_COLOR = '#121212'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+let mainWindow: BrowserWindow | null = null
+
+if (process.env.VITE_DEV_SERVER_URL) {
+  app.setName(APP_TITLE)
+}
 
 function createWindow() {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    title: 'My Launcher',
+  mainWindow = new BrowserWindow({
+    width: 1280,
+    height: 720,
+    minWidth: 1000,
+    minHeight: 700,
+    title: APP_TITLE,
+    backgroundColor: BG_COLOR,
+    show: false,
+
+    icon: path.join(__dirname, '../build/icon.png'),
+
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false // For testing purposes only
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+      devTools: true
     }
   })
 
-  // Load Vite Dev Server URL in development
+  mainWindow.once('ready-to-show', () => {
+    mainWindow?.show()
+  })
+
   if (process.env.VITE_DEV_SERVER_URL) {
-    win.loadURL(process.env.VITE_DEV_SERVER_URL)
+    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
   } else {
-    win.loadFile(path.join(__dirname, '../dist/index.html'))
+    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
   }
 }
 
-app.whenReady().then(async () => {
-  createWindow()
-
-  console.log('Starting Minecraft via EML...')
-
-  // 1. Initialize the Launcher
-  const launcher = new EMLLib.Launcher({
-    url: 'http://localhost:8080', // Your AdminTool URL
-    serverId: 'template', // Your server ID
-    account: new EMLLib.CrackAuth().auth('TestAccount') // A test cracked account
+function configureAppMenu() {
+  app.setAboutPanelOptions({
+    applicationName: APP_TITLE,
+    applicationVersion: app.getVersion(),
+    version: 'Build 2025.1',
+    copyright: 'Copyright © 2025 EML',
+    credits: 'Developed with EML Lib & Electron',
+    iconPath: path.join(__dirname, '../build/icon.png')
   })
 
-  // 2. Attach listeners
-  launcher.on('launch_compute_download', () => console.log('Computing download...'))
-  launcher.on('launch_download', (download) => console.log(`Downloading ${download.total.amount} files (${download.total.size} B).`))
-  launcher.on('launch_install_loader', (loader) => console.log(`Installing loader ${loader.type} ${loader.loaderVersion}...`))
-  launcher.on('launch_extract_natives', () => console.log('Extracting natives...'))
-  launcher.on('launch_copy_assets', () => console.log('Copying assets...'))
-  launcher.on('launch_patch_loader', () => console.log('Patching loader...'))
-  launcher.on('launch_check_java', () => console.log('Checking Java...'))
-  launcher.on('java_info', (info) => console.log(`Using Java ${info.version} ${info.arch}`))
-  launcher.on('launch_clean', () => console.log('\nCleaning game directory...'))
-  launcher.on('launch_launch', (info) => console.log(`Launching Minecraft ${info.version}...`))
-  launcher.on('launch_data', (message) => console.log(message))
-  launcher.on('launch_close', (code) => console.log(`Closed with code ${code}.`))
+  const template: any[] = [
+    ...(process.platform === 'darwin'
+      ? [
+          {
+            label: app.name,
+            submenu: [
+              { role: 'about' },
+              { type: 'separator' },
+              { role: 'services' },
+              { type: 'separator' },
+              { role: 'hide' },
+              { role: 'hideOthers' },
+              { role: 'unhide' },
+              { type: 'separator' },
+              { role: 'quit' }
+            ]
+          }
+        ]
+      : []),
 
-  try {
-    await launcher.launch()
-  } catch (err) {
-    console.error('Error:', err)
+    {
+      label: 'File',
+      submenu: [
+        { role: 'close' }
+      ]
+    },
+
+    {
+      label: 'View',
+      submenu: [
+        { role: 'reload' },
+        { role: 'forceReload' },
+        { role: 'toggleDevTools' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' }
+      ]
+    }
+  ]
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
+}
+
+app.whenReady().then(() => {
+  configureAppMenu()
+
+  createWindow()
+
+  if (mainWindow) {
+    registerAuthHandlers()
+    registerLauncherHandlers(mainWindow)
   }
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit()
+  app.quit()
 })
+

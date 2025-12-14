@@ -1,0 +1,29 @@
+.maintenance-card {
+  text-align: center;
+  background: var(--glass-bg);
+  padding: 40px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+
+  .icon {
+    font-size: 50px;
+    color: #ffb300;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    color: #ffb300;
+    margin-bottom: 10px;
+  }
+
+  .maintenance-dates {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: rgba(255, 179, 0, 0.1);
+    border-radius: var(--btn-radius);
+    color: #ffb300;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}

@@ -1,0 +1,26 @@
+.update-card {
+  text-align: center;
+  background: var(--glass-bg);
+  padding: 40px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+  }
+
+  h2 {
+    margin-bottom: 10px;
+    font-size: 22px;
+  }
+
+  p {
+    color: var(--text-muted);
+  }
+}

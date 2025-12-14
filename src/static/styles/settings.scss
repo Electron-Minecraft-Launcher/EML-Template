@@ -1,0 +1,277 @@
+#view-settings {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  &.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+.settings-modal {
+  position: relative;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  width: 800px;
+  height: 550px;
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+/* --- SIDEBAR --- */
+.settings-sidebar {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+
+  h2 {
+    font-size: 18px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--primary);
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  /* Nav Buttons (Custom variant of .btn) */
+  .nav-btn {
+    background: transparent;
+    border: none;
+    color: #aaa;
+    justify-content: flex-start;
+    padding: 12px 15px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+    }
+
+    &.active {
+      background: rgba(255, 87, 34, 0.15);
+      color: var(--primary);
+    }
+  }
+}
+
+.btn-close-absolute {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+  /* Visual style handled by .btn-icon-only in main.scss */
+}
+
+/* --- CONTENT AREA --- */
+.settings-content {
+  padding: 30px;
+  overflow-y: auto;
+
+  h3 {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 20px;
+  }
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+
+  &.active {
+    display: block;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- GAME SETTINGS --- */
+.setting-group {
+  margin-bottom: 25px;
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #ddd;
+
+    i {
+      color: var(--primary);
+      margin-right: 8px;
+      width: 16px;
+      text-align: center;
+    }
+  }
+
+  select,
+  input[type="text"] {
+    width: 100%;
+    background: #111;
+    border: 1px solid #444;
+    color: white;
+    padding: 10px;
+    border-radius: var(--btn-radius);
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.2s;
+
+    &:focus {
+      border-color: var(--primary);
+    }
+  }
+}
+
+/* Dual Slider Styles */
+.dual-slider-container {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  margin: 10px 0 20px 0;
+}
+
+.slider-track {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 4px;
+  background: #444;
+  border-radius: 2px;
+}
+
+.slider-fill {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  background: var(--primary);
+  z-index: 1;
+}
+
+input[type="range"] {
+  position: absolute;
+  top: calc(50% + 3px);
+  transform: translateY(-50%);
+  width: 100%;
+  appearance: none;
+  background: none;
+  pointer-events: none;
+  z-index: 2;
+  margin: 0;
+
+  &::-webkit-slider-thumb {
+    pointer-events: all;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.ram-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #aaa;
+  margin-top: -5px;
+}
+
+/* Java Custom Path */
+.java-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#java-custom-path {
+  display: flex;
+  gap: 10px;
+
+  &.hidden {
+    display: none;
+  }
+}
+
+/* --- ACCOUNT SETTINGS --- */
+.account-card {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.account-header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .account-avatar {
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .account-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .account-name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .account-uuid {
+      font-size: 12px;
+      color: #777;
+      font-family: monospace;
+    }
+
+    .account-type {
+      font-size: 13px;
+      color: #4caf50;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 5px;
+    }
+  }
+}
+
+.account-actions {
+  display: flex;
+  gap: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  /* Buttons handled by global classes .btn-secondary, .btn-danger */
+}

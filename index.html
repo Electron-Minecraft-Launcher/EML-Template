@@ -2,12 +2,314 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>eml-template</title>
+    <title>EML Template</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      body {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease-in-out;
+        background-color: #121212;
+      }
+      body.loaded {
+        opacity: 1;
+        visibility: visible;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <div id="app">
+      <div class="app-background"></div>
+
+      <div id="view-login" class="view active" data-view="login">
+        <div class="login-card">
+          <img src="/src/static/images/logo.png" class="logo" alt="Logo" />
+          <h1>Welcome</h1>
+          <p class="subtitle">Log in to verify your access.</p>
+
+          <button id="btn-login-ms" class="btn btn-microsoft">
+            <i class="fa-brands fa-microsoft"></i>
+            <span>Sign in with Microsoft</span>
+          </button>
+
+          <div class="login-footer">
+            <small>No account yet? <a href="https://microsoft.com">Create one here</a></small>
+          </div>
+        </div>
+      </div>
+
+      <div id="view-home" class="view" data-view="home">
+        <aside class="home-sidebar">
+          <div class="sidebar-top">
+            <div class="user-profile">
+              <img src="https://minotar.net/helm/GoldFrite/50" id="user-avatar" alt="Skin" />
+              <div class="user-details">
+                <span id="user-name">GoldFrite</span>
+                <span class="rank-badge">Member</span>
+              </div>
+            </div>
+
+            <button id="btn-settings" class="btn btn-secondary" title="Settings"><i class="fa-fw fa-solid fa-gear"></i></button>
+          </div>
+
+          <div class="sidebar-middle">
+            <h3>Shop</h3>
+            <div class="shop-item">
+              <img src="src/static/images/gold.png" class="shop-item-image" alt="Gold Rank" />
+              <div class="shop-item-details">
+                <span class="item-name">Gold Rank</span>
+                <span class="item-price">$9.99</span>
+              </div>
+            </div>
+            <div class="shop-item">
+              <img src="src/static/images/silver.png" class="shop-item-image" alt="Silver Rank" />
+              <div class="shop-item-details">
+                <span class="item-name">Silver Rank</span>
+                <span class="item-price">$6.99</span>
+              </div>
+            </div>
+            <div class="shop-item">
+              <img src="src/static/images/bronze.png" class="shop-item-image" alt="Bronze Rank" />
+              <div class="shop-item-details">
+                <span class="item-name">Bronze Rank</span>
+                <span class="item-price">$3.99</span>
+              </div>
+            </div>
+            <div class="shop-item">
+              <img src="src/static/images/box.png" class="shop-item-image" alt="Mystery Box" />
+              <div class="shop-item-details">
+                <span class="item-name">Mystery Box</span>
+                <span class="item-price">$5.99</span>
+              </div>
+            </div>
+
+            <a class="btn btn-secondary">
+              <i class="fa-fw fa-solid fa-cart-shopping"></i>
+              <span>Visit shop</span>
+            </a>
+          </div>
+
+          <div class="sidebar-bottom">
+            <div class="server-status">
+              <div class="status-indicator">
+                <div class="status-dot online"></div>
+                <span class="status-text">Online</span>
+              </div>
+              <div class="player-count"><i class="fa-fw fa-solid fa-users"></i>&nbsp;&nbsp;124 / 500</div>
+            </div>
+
+            <div class="launch-area">
+              <button id="btn-play">PLAY</button>
+
+              <div class="progress-container hidden" id="progress-container">
+                <div class="progress-info">
+                  <span id="progress-label">Downloading...</span>
+                  <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" id="progress-bar"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <main class="home-content">
+          <div class="news-header">
+            <h2>News Feed</h2>
+            <div class="social-links">
+              <a href="#" class="btn btn-icon-only"><i class="fa-brands fa-discord"></i></a>
+              <a href="#" class="btn btn-icon-only"><i class="fa-brands fa-twitter"></i></a>
+              <a href="#" class="btn btn-icon-only"><i class="fa-solid fa-globe"></i></a>
+            </div>
+          </div>
+
+          <div class="news-list" id="news-list">
+            <article class="news-article">
+              <div class="article-meta">
+                <div class="author">
+                  <img src="https://minotar.net/helm/Notch/24" alt="Dev" />
+                  <span>Developer</span>
+                </div>
+                <span class="separator">•</span>
+                <span class="date">Dec 10, 2025</span>
+                <span class="separator">•</span>
+                <div class="tags-container">
+                  <span class="tag info">Patch Note</span>
+                </div>
+              </div>
+
+              <h3>Hotfix v1.2.4</h3>
+
+              <div class="article-content">
+                We have deployed a small hotfix to address recent stability issues. <br />
+                - Fixed a crash when opening the inventory while sprinting. <br />
+                - Adjusted the hitboxes for the custom mobs. <br />
+                - Reduced the price of the starter kit. Please restart your launcher to apply the update.
+              </div>
+            </article>
+            
+            <article class="news-article">
+              <div class="article-meta">
+                <div class="author">
+                  <img src="https://minotar.net/helm/MHF_Steve/24" alt="Admin" />
+                  <span>Admin Team</span>
+                </div>
+                <span class="separator">•</span>
+                <span class="date">Dec 12, 2025</span>
+                <span class="separator">•</span>
+                <div class="tags-container">
+                  <span class="tag update">Major Update</span>
+                </div>
+              </div>
+
+              <h3>Server Reset & New Spawn Arrival</h3>
+
+              <img src="src/static/images/news.webp" alt="Spawn" />
+
+              <div class="article-content">
+                The server has been successfully wiped! Join now to discover the brand new spawn area built by our build team. We have added:<br />
+                - A new economy system based on gold. <br />
+                - 3 new dungeons in the north area. <br />
+                - Fixed the issue with chunks not loading correctly. Enjoy the new season!
+              </div>
+            </article>
+
+            <article class="news-article">
+              <div class="article-meta">
+                <div class="author">
+                  <img src="https://minotar.net/helm/Alex/24" alt="Mod" />
+                  <span>Event Manager</span>
+                </div>
+                <span class="separator">•</span>
+                <span class="date">Dec 08, 2025</span>
+                <span class="separator">•</span>
+                <div class="tags-container">
+                  <span class="tag event">PvP Event</span>
+                </div>
+              </div>
+
+              <h3>Sunday Tournament: Registration Open</h3>
+
+              <div class="article-content">
+                Registration for the 2v2 tournament is now open on our Discord server! Make sure to register your team before Saturday 8 PM. Rewards:
+                1st Place: 5000 Coins + "Champion" Title 2nd Place: 2500 Coins 3rd Place: 1000 Coins
+              </div>
+            </article>
+          </div>
+        </main>
+      </div>
+
+      <div id="view-settings" class="view overlay" data-view="settings">
+        <div class="settings-modal">
+          <button id="btn-close-settings" class="btn btn-icon-only btn-close-absolute">
+            <i class="fa-fw fa-solid fa-xmark"></i>
+          </button>
+
+          <aside class="settings-sidebar">
+            <h2>Settings</h2>
+            <nav>
+              <button class="btn nav-btn active" data-tab="game"><i class="fa-fw fa-solid fa-gamepad"></i><span>Game</span></button>
+              <button class="btn nav-btn" data-tab="account"><i class="fa-fw fa-solid fa-user"></i><span>Account</span></button>
+            </nav>
+          </aside>
+
+          <main class="settings-content">
+            <section id="tab-game" class="tab-content active">
+              <h3>Minecraft configuration</h3>
+
+              <div class="setting-group">
+                <label><i class="fa-fw fa-solid fa-memory"></i>&nbsp;&nbsp;Allocated RAM</label>
+
+                <div class="dual-slider-container">
+                  <div class="slider-track"></div>
+                  <div class="slider-fill" id="ram-track-fill"></div>
+
+                  <input type="range" id="ram-min" min="0.5" max="16" step="0.5" value="2" />
+                  <input type="range" id="ram-max" min="0.5" max="16" step="0.5" value="8" />
+                </div>
+
+                <div class="ram-labels">
+                  <span id="ram-min-label">2 GB</span>
+                  <span id="ram-max-label">8 GB</span>
+                </div>
+              </div>
+
+              <div class="setting-group">
+                <label><i class="fa-fw fa-solid fa-display"></i>&nbsp;&nbsp;Window Size</label>
+                <select id="resolution-select">
+                  <option value="auto">Automatic (Default)</option>
+                  <option value="fullscreen">Fullscreen</option>
+                  <option value="1920x1080">1920x1080 (1080p)</option>
+                  <option value="1280x720">1280x720 (720p)</option>
+                  <option value="854x480">854x480 (480p)</option>
+                </select>
+              </div>
+
+              <div class="setting-group">
+                <label><i class="fa-brands fa-java"></i>&nbsp;&nbsp;Java version</label>
+                <div class="java-selector">
+                  <select id="java-select">
+                    <option value="bundled">Use bundled Java (recommended)</option>
+                    <option value="system">Use system Java (PATH)</option>
+                    <option value="custom">Custom path...</option>
+                  </select>
+                  <div id="java-custom-path" class="hidden">
+                    <input type="text" placeholder="C:\Program Files\Java\bin\java.exe" disabled />
+                    <button id="btn-browse-java" class="btn btn-secondary">Browse...</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="tab-account" class="tab-content">
+              <h3>Account management</h3>
+
+              <div class="account-card">
+                <div class="account-header">
+                  <img src="https://minotar.net/helm/GoldFrite/80" alt="Skin" class="account-avatar" />
+                  <div class="account-details">
+                    <span class="account-name">GoldFrite</span>
+                    <span class="account-uuid">UUID: 550e8400-e29b...</span>
+                    <span class="account-type"><i class="fa-brands fa-microsoft"></i>&nbsp;&nbsp;Microsoft Account</span>
+                  </div>
+                </div>
+
+                <div class="account-actions">
+                  <a href="https://www.xbox.com/en-US/live" target="_blank" class="btn btn-secondary">
+                    <i class="fa-fw fa-solid fa-external-link-alt"></i><span>Manage Xbox Account</span>
+                  </a>
+                  <button id="btn-logout" class="btn btn-danger"><i class="fa-fw fa-solid fa-right-from-bracket"></i><span>Log out</span></button>
+                </div>
+              </div>
+            </section>
+          </main>
+        </div>
+      </div>
+
+      <div id="view-maintenance" class="view overlay" data-view="maintenance">
+        <div class="maintenance-card">
+          <i class="fa-fw fa-solid fa-screwdriver-wrench icon"></i>
+          <h2>Under Maintenance</h2>
+          <p id="maintenance-reason">We are updating the modpack. Back soon!</p>
+          <div class="maintenance-dates">
+            <span><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;End: 18:00</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="view-update" class="view overlay" data-view="update">
+        <div class="update-card">
+          <div class="spinner"></div>
+          <h2>Launcher Update</h2>
+          <p>Downloading new version...</p>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/app.ts"></script>
   </body>
 </html>
+
