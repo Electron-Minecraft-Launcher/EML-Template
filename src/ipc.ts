@@ -1,31 +1,39 @@
+import type { Account } from 'eml-lib'
+
 declare global {
   interface Window {
     api: {
-      login: () => Promise<boolean>
-      logout: () => Promise<void>
-      isLoggedIn: () => Promise<boolean>
-      launch: () => Promise<void>
-      onProgress: (callback: (data: any) => void) => void
+      auth: {
+        login: () => Promise<{ success: boolean; account: Account }>
+        refresh: () => Promise<{ success: boolean; account: Account }>
+        logout: () => Promise<{ success: boolean }>
+      }
+      game: {
+        launch: () => Promise<void>
+        onProgress: (callback: any) => void
+      }
     }
   }
 }
 
-export async function login(): Promise<boolean> {
-  return await window.api.login()
+export const auth = {
+  login: async () => {
+    return await window.api.auth.login()
+  },
+  logout: async () => {
+    return await window.api.auth.logout()
+  },
+  refresh: async () => {
+    return await window.api.auth.refresh()
+  }
 }
 
-export async function logout(): Promise<void> {
-  return await window.api.logout()
+export const game = {
+  launch: async () => {
+    return await window.api.game.launch()
+  },
+  onProgress: (callback: (data: any) => void) => {
+    window.api.game.onProgress(callback)
+  }
 }
 
-export async function isLoggedIn(): Promise<boolean> {
-  return await window.api.isLoggedIn()
-}
-
-export async function launchGame(): Promise<void> {
-  return await window.api.launch()
-}
-
-export function onProgress(callback: (data: any) => void) {
-  window.api.onProgress(callback)
-}

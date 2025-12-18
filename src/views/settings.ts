@@ -1,26 +1,22 @@
 import { setView, closeOverlay } from '../state'
-import { logout } from '../ipc'
+import { auth } from '../ipc'
 
 export function initSettings() {
   const closeBtn = document.getElementById('btn-close-settings')
   const logoutBtn = document.getElementById('btn-logout')
 
-  // --- NAVIGATION (Fermer le modal) ---
   closeBtn?.addEventListener('click', () => {
     closeOverlay('settings')
   })
 
-  // --- LOGOUT ---
   logoutBtn?.addEventListener('click', async () => {
     if (confirm('Are you sure you want to log out?')) {
-      await logout()
+      await auth.logout()
       closeOverlay('settings')
       setView('login')
     }
   })
 
-  // --- TABS ---
-  // (Code des tabs identique à précédemment...)
   const tabButtons = document.querySelectorAll('.nav-btn')
   const tabContents = document.querySelectorAll('.tab-content')
   tabButtons.forEach((btn) => {
@@ -34,13 +30,9 @@ export function initSettings() {
     })
   })
 
-  // --- SLIDER INIT ---
   initDualSlider()
 }
 
-/**
- * Handles the Min/Max RAM slider logic
- */
 function initDualSlider() {
   const minInput = document.getElementById('ram-min') as HTMLInputElement
   const maxInput = document.getElementById('ram-max') as HTMLInputElement
@@ -56,8 +48,6 @@ function initDualSlider() {
     let minVal = parseFloat(minInput.value)
     let maxVal = parseFloat(maxInput.value)
 
-    // Logique de collision stricte
-    // Si on bouge Min et qu'il tape Max, on le bloque
     if (maxVal - minVal < gap) {
       if (e?.target === minInput) {
         minInput.value = (maxVal - gap).toString()
@@ -68,16 +58,10 @@ function initDualSlider() {
       }
     }
 
-    // Mise à jour des Labels
     if (minLabel) minLabel.innerText = `${minVal} GB`
     if (maxLabel) maxLabel.innerText = `${maxVal} GB`
 
-    // --- CALIBRATION VISUELLE ---
-    // Les valeurs du range sont entre 0.5 et 16.
-    // L'input range renvoie une valeur absolue.
-    // Pour le CSS width/left, il faut convertir en pourcentage (0-100%)
-
-    const range = parseFloat(minInput.max) - parseFloat(minInput.min) // 16 - 0.5 = 15.5
+    const range = parseFloat(minInput.max) - parseFloat(minInput.min)
     const minPercent = ((minVal - parseFloat(minInput.min)) / range) * 100
     const maxPercent = ((maxVal - parseFloat(maxInput.min)) / range) * 100
 
@@ -88,14 +72,10 @@ function initDualSlider() {
   minInput.addEventListener('input', updateSlider)
   maxInput.addEventListener('input', updateSlider)
 
-  // Appel initial
   updateSlider()
   initJavaSelector()
 }
 
-/**
- * Handles showing the custom path input for Java
- */
 function initJavaSelector() {
   const select = document.getElementById('java-select') as HTMLSelectElement
   const customDiv = document.getElementById('java-custom-path')

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EML Template</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
     <style>
       body {
         opacity: 0;
@@ -13,9 +13,14 @@
         transition: opacity 0.4s ease-in-out;
         background-color: #121212;
       }
+
       body.loaded {
         opacity: 1;
         visibility: visible;
+      }
+
+      div.view:not(.active) {
+        display: none;
       }
     </style>
   </head>
@@ -23,7 +28,14 @@
     <div id="app">
       <div class="app-background"></div>
 
-      <div id="view-login" class="view active" data-view="login">
+      <div id="view-loading" class="view active" data-view="loading">
+        <div class="loading-card">
+          <p class="spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></p>
+          <p class="text">Loading...</p>
+        </div>
+      </div>
+
+      <div id="view-login" class="view" data-view="login">
         <div class="login-card">
           <img src="/src/static/images/logo.png" class="logo" alt="Logo" />
           <h1>Welcome</h1>
@@ -44,9 +56,9 @@
         <aside class="home-sidebar">
           <div class="sidebar-top">
             <div class="user-profile">
-              <img src="https://minotar.net/helm/GoldFrite/50" id="user-avatar" alt="Skin" />
+              <img src="https://minotar.net/helm/Steve/50" id="user-avatar" alt="Skin" />
               <div class="user-details">
-                <span id="user-name">GoldFrite</span>
+                <span id="user-name">Undefined</span>
                 <span class="rank-badge">Member</span>
               </div>
             </div>
@@ -118,10 +130,10 @@
 
         <main class="home-content">
           <div class="news-header">
-            <h2>News Feed</h2>
+            <h2>News feed</h2>
             <div class="social-links">
               <a href="#" class="btn btn-icon-only"><i class="fa-brands fa-discord"></i></a>
-              <a href="#" class="btn btn-icon-only"><i class="fa-brands fa-twitter"></i></a>
+              <a href="#" class="btn btn-icon-only"><i class="fa-brands fa-x-twitter"></i></a>
               <a href="#" class="btn btn-icon-only"><i class="fa-solid fa-globe"></i></a>
             </div>
           </div>
@@ -150,7 +162,7 @@
                 - Reduced the price of the starter kit. Please restart your launcher to apply the update.
               </div>
             </article>
-            
+
             <article class="news-article">
               <div class="article-meta">
                 <div class="author">
@@ -211,7 +223,7 @@
           <aside class="settings-sidebar">
             <h2>Settings</h2>
             <nav>
-              <button class="btn nav-btn active" data-tab="game"><i class="fa-fw fa-solid fa-gamepad"></i><span>Game</span></button>
+              <button class="btn nav-btn active" data-tab="game"><i class="fa-fw fa-solid fa-cubes"></i><span>Game</span></button>
               <button class="btn nav-btn" data-tab="account"><i class="fa-fw fa-solid fa-user"></i><span>Account</span></button>
             </nav>
           </aside>
@@ -271,9 +283,9 @@
                 <div class="account-header">
                   <img src="https://minotar.net/helm/GoldFrite/80" alt="Skin" class="account-avatar" />
                   <div class="account-details">
-                    <span class="account-name">GoldFrite</span>
-                    <span class="account-uuid">UUID: 550e8400-e29b...</span>
-                    <span class="account-type"><i class="fa-brands fa-microsoft"></i>&nbsp;&nbsp;Microsoft Account</span>
+                    <span class="account-name" id="settings-user-name">GoldFrite</span>
+                    <span class="account-uuid" id="settings-user-uuid">UUID: 550e8400-e29b...</span>
+                    <span class="account-type" id="settings-user-type"><i class="fa-brands fa-microsoft"></i>&nbsp;&nbsp;Microsoft Account</span>
                   </div>
                 </div>
 

@@ -8,6 +8,8 @@
 body {
   font-family: 'Poppins', sans-serif;
   background: var(--bg-dark);
+  background-position: center;
+  background-size: cover;
   color: var(--text-main);
   height: 100vh;
   overflow: hidden;

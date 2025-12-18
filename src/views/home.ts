@@ -1,5 +1,5 @@
 import { setView } from '../state'
-import { launchGame, onProgress } from '../ipc'
+import { game } from '../ipc'
 
 export function initHome() {
   const playBtn = document.getElementById('btn-play')
@@ -15,10 +15,10 @@ export function initHome() {
     if (playBtn) playBtn.style.display = 'none'
     if (progressContainer) progressContainer.classList.remove('hidden')
 
-    await launchGame()
+    await game.launch()
   })
 
-  onProgress((data) => {
+  game.onProgress((data) => {
     if (progressBar && progressLabel && progressPercent) {
       progressBar.style.width = `${data.percent}%`
       progressLabel.innerText = data.status
@@ -30,6 +30,7 @@ export function initHome() {
           if (playBtn) playBtn.style.display = 'block'
           if (progressContainer) progressContainer.classList.add('hidden')
           if (progressBar) progressBar.style.width = '0%'
+          if (progressPercent) progressPercent.innerText = '0%'
         }, 1000)
       }
     }

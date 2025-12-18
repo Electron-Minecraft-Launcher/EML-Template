@@ -1,13 +1,16 @@
-import { setView } from './state'
-import { isLoggedIn } from './ipc'
+import { setUser, setView } from './state'
+import { auth } from './ipc'
 
 export async function bootstrap() {
   console.log('Initializing Launcher...')
-
+  setView('loading')
+  document.body.classList.add('loaded')
+  
   try {
-    const logged = await isLoggedIn()
+    const session = await auth.refresh()
 
-    if (logged) {
+    if (session.success) {
+      setUser(session.account)
       setView('home')
     } else {
       setView('login')
@@ -16,6 +19,6 @@ export async function bootstrap() {
     console.error('Failed to check auth status:', error)
     setView('login')
   } finally {
-    document.body.classList.add('loaded')
   }
 }
+

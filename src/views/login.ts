@@ -1,5 +1,5 @@
-import { setView } from '../state'
-import { login } from '../ipc'
+import { setUser, setView } from '../state'
+import { auth } from '../ipc'
 
 export function initLogin() {
   const btn = document.getElementById('btn-login-ms') as HTMLButtonElement | null
@@ -12,15 +12,16 @@ export function initLogin() {
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Connecting...'
 
     try {
-      const success = await login()
+      const session = await auth.login()
 
-      if (success) {
+      if (session.success) {
+        setUser(session.account)
         setView('home')
       } else {
         alert('Login failed')
       }
-    } catch (error) {
-      console.error(error)
+    } catch (err) {
+      console.error(err)
       alert('An error occurred during login.')
     } finally {
       btn.disabled = false

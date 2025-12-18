@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { registerAuthHandlers } from './handlers/auth'
 import { registerLauncherHandlers } from './handlers/launcher'
 
-const APP_TITLE = 'My Server Launcher'
+const APP_TITLE = 'EML Template'
 const BG_COLOR = '#121212'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -106,7 +106,7 @@ app.whenReady().then(() => {
   createWindow()
 
   if (mainWindow) {
-    registerAuthHandlers()
+    registerAuthHandlers(mainWindow)
     registerLauncherHandlers(mainWindow)
   }
 })

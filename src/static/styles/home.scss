@@ -203,7 +203,7 @@
 /* --- RIGHT CONTENT (News Feed) --- */
 .home-content {
   flex: 1;
-  padding: 40px 60px;
+  padding: 40px 60px 0 60px;
   /* Un peu plus de padding pour l'aération */
   display: flex;
   flex-direction: column;
@@ -233,7 +233,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 40px;
-  padding-bottom: 20px;
+  padding-bottom: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   h2 {
@@ -253,7 +253,9 @@
   flex-direction: column;
   gap: 30px;
   /* Grand espace entre les articles */
+  padding-top: 20px;
   padding-bottom: 40px;
+  overflow-y: auto;
 }
 
 /* --- MARKDOWN-LIKE ARTICLE STYLE --- */

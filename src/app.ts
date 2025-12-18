@@ -1,5 +1,6 @@
 import './static/styles/_variables.scss'
 import './static/styles/main.scss'
+import './static/styles/loading.scss'
 import './static/styles/login.scss'
 import './static/styles/home.scss'
 import './static/styles/settings.scss'
