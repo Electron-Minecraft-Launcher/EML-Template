@@ -91,14 +91,14 @@
 
 .tab-content {
   display: none;
-  animation: fadeIn 0.3s ease;
+  animation: fadeInSettings 0.3s ease;
 
   &.active {
     display: block;
   }
 }
 
-@keyframes fadeIn {
+@keyframes fadeInSettings {
   from {
     opacity: 0;
     transform: translateY(5px);
@@ -273,5 +273,4 @@ input[type="range"] {
   gap: 15px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 20px;
-  /* Buttons handled by global classes .btn-secondary, .btn-danger */
 }

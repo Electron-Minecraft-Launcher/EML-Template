@@ -34,11 +34,7 @@ function updateUserInterface() {
   if (avatarEl) avatarEl.src = `https://minotar.net/helm/${currentAccount.uuid ?? currentAccount.name}/100.png`
   if (nameSettingsEl) nameSettingsEl.innerText = currentAccount.name
   if (uuidSettingsEl) uuidSettingsEl.innerText = `UUID: ${currentAccount.uuid}`
-  if (typeSettingsEl) {
-    // const typeIcon = currentAccount.type === 'microsoft' ? '<i class="fa-brands fa-microsoft"></i>' : '<i class="fa-brands fa-mojang"></i>'
-    // const typeText = currentAccount.type === 'microsoft' ? 'Microsoft Account' : 'Mojang Account'
-    // typeSettingsEl.innerHTML = `${typeIcon}&nbsp;&nbsp;${typeText}`
-  }
+  if (typeSettingsEl) typeSettingsEl.innerHTML = getAccountIcon(currentAccount.meta.type)
 }
 
 export function setView(view: ViewName) {
@@ -46,6 +42,8 @@ export function setView(view: ViewName) {
   if (!target) return console.error(`View ${view} not found`)
 
   const isOverlay = target.classList.contains('overlay')
+
+  if (view === 'settings') resetSettingsTab()
 
   if (!isOverlay) {
     document.querySelectorAll('.view').forEach((el) => {
@@ -63,3 +61,25 @@ export function closeOverlay(view: ViewName) {
   target?.classList.remove('active')
 }
 
+function getAccountIcon(type: 'msa' | 'azuriom' | 'crack') {
+  switch (type) {
+    case 'msa':
+      return '<i class="fa-brands fa-microsoft"></i>Microsoft account'
+    case 'azuriom':
+      return '<i class="fa-brands fa-globe"></i>Azuriom account'
+    case 'crack':
+      return '<i class="fa-solid fa-user-slash"></i>Cracked account'
+    default:
+      return 'Unknown account type'
+  }
+}
+
+function resetSettingsTab() {
+  const tabButtons = document.querySelectorAll('.nav-btn')
+  const tabContents = document.querySelectorAll('.tab-content')
+  tabButtons.forEach((b) => b.classList.remove('active'))
+  tabContents.forEach((content) => content.classList.remove('active'))
+
+  tabButtons[0].classList.add('active')
+  tabContents[0].classList.add('active')
+}

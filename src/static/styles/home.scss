@@ -203,13 +203,18 @@
 /* --- RIGHT CONTENT (News Feed) --- */
 .home-content {
   flex: 1;
-  padding: 40px 60px 0 60px;
-  /* Un peu plus de padding pour l'aération */
+  padding: 40px 0 0 60px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
 
-  /* Scrollbar custom */
+  hr {
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    height: 1px;
+    width: calc(100% - 60px);
+  }
+
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -232,9 +237,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 40px;
-  padding-bottom: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 0;
+  padding: 0 60px 0 0;
 
   h2 {
     font-size: 28px;
@@ -252,10 +256,26 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
-  /* Grand espace entre les articles */
-  padding-top: 20px;
+  padding: 60px 52px 0 0;
   padding-bottom: 40px;
   overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
 }
 
 /* --- MARKDOWN-LIKE ARTICLE STYLE --- */
@@ -296,6 +316,7 @@
         height: 24px;
         border-radius: 50%;
         border: 1px solid rgba(255, 255, 255, 0.2);
+        margin: 0;
       }
     }
   }

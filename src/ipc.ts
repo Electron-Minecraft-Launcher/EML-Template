@@ -4,8 +4,8 @@ declare global {
   interface Window {
     api: {
       auth: {
-        login: () => Promise<{ success: boolean; account: Account }>
-        refresh: () => Promise<{ success: boolean; account: Account }>
+        login: () => Promise<{ success: true; account: Account } | { success: false; error: string }>
+        refresh: () => Promise<{ success: true; account: Account } | { success: false; error?: string }>
         logout: () => Promise<{ success: boolean }>
       }
       game: {

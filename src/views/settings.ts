@@ -1,5 +1,6 @@
 import { setView, closeOverlay } from '../state'
 import { auth } from '../ipc'
+import { Dialog } from './dialog'
 
 export function initSettings() {
   const closeBtn = document.getElementById('btn-close-settings')
@@ -10,7 +11,17 @@ export function initSettings() {
   })
 
   logoutBtn?.addEventListener('click', async () => {
-    if (confirm('Are you sure you want to log out?')) {
+    console.log('Logout button clicked')
+    if (
+      await Dialog.show(
+        'Are you sure you want to logout?',
+        [
+          { text: 'Cancel', type: 'cancel' },
+          { text: 'Logout', type: 'danger' }
+        ],
+        'Log out'
+      )
+    ) {
       await auth.logout()
       closeOverlay('settings')
       setView('login')
@@ -42,7 +53,7 @@ function initDualSlider() {
 
   if (!minInput || !maxInput || !fill) return
 
-  const gap = 0.5 // Ecart minimum entre les deux poignées
+  const gap = 0.5
 
   const updateSlider = (e?: Event) => {
     let minVal = parseFloat(minInput.value)
@@ -90,6 +101,4 @@ function initJavaSelector() {
     }
   })
 }
-
-
 

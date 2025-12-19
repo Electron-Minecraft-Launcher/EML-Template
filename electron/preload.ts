@@ -5,8 +5,8 @@ console.log('Preload script loaded')
 
 contextBridge.exposeInMainWorld('api', {
   auth: {
-    login: (): Promise<{ success: boolean; account: Account }> => ipcRenderer.invoke('auth:login'),
-    refresh: (): Promise<{ success: boolean; account: Account }> => ipcRenderer.invoke('auth:refresh'),
+    login: (): Promise<{ success: true; account: Account } | { success: false; error: string }> => ipcRenderer.invoke('auth:login'),
+    refresh: (): Promise<{ success: true; account: Account } | { success: false; error?: string }> => ipcRenderer.invoke('auth:refresh'),
     logout: (): Promise<{ success: boolean }> => ipcRenderer.invoke('auth:logout')
   },
   game: {

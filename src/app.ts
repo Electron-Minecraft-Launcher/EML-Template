@@ -6,6 +6,7 @@ import './static/styles/home.scss'
 import './static/styles/settings.scss'
 import './static/styles/maintenance.scss'
 import './static/styles/update.scss'
+import './static/styles/dialog.scss'
 
 import { initLogin } from './views/login'
 import { initHome } from './views/home'

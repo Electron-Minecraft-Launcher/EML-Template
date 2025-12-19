@@ -9,7 +9,10 @@ export function initHome() {
   const progressLabel = document.getElementById('progress-label')
   const progressPercent = document.getElementById('progress-percent')
 
-  settingsBtn?.addEventListener('click', () => setView('settings'))
+  settingsBtn?.addEventListener('click', () => {
+    
+    setView('settings')
+  })
 
   playBtn?.addEventListener('click', async () => {
     if (playBtn) playBtn.style.display = 'none'
