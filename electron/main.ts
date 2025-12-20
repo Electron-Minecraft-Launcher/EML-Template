@@ -3,6 +3,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { registerAuthHandlers } from './handlers/auth'
 import { registerLauncherHandlers } from './handlers/launcher'
+import { registerSettingsHandlers } from './handlers/settings'
 
 const APP_TITLE = 'EML Template'
 const BG_COLOR = '#121212'
@@ -108,6 +109,7 @@ app.whenReady().then(() => {
   if (mainWindow) {
     registerAuthHandlers(mainWindow)
     registerLauncherHandlers(mainWindow)
+    registerSettingsHandlers()
   }
 })
 

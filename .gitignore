@@ -1,4 +1,4 @@
-# Logs
+_mock-msa.ts
 logs
 *.log
 npm-debug.log*
@@ -9,10 +9,10 @@ lerna-debug.log*
 
 node_modules
 dist
+dist-electron
 dist-ssr
 *.local
 
-# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -23,4 +23,3 @@ dist-ssr
 *.sln
 *.sw?
 
-dist-electron

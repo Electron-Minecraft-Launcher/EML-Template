@@ -252,14 +252,20 @@
               </div>
 
               <div class="setting-group">
-                <label><i class="fa-fw fa-solid fa-display"></i>&nbsp;&nbsp;Window Size</label>
+                <label><i class="fa-fw fa-solid fa-display"></i>&nbsp;&nbsp;Window size</label>
                 <select id="resolution-select">
-                  <option value="auto">Automatic (Default)</option>
-                  <option value="fullscreen">Fullscreen</option>
-                  <option value="1920x1080">1920x1080 (1080p)</option>
-                  <option value="1280x720">1280x720 (720p)</option>
-                  <option value="854x480">854x480 (480p)</option>
                 </select>
+              </div>
+
+              <div class="setting-group">
+                <label for="launcher-action"><i class="fa-solid fa-power-off"></i>&nbsp;&nbsp;Action after launch</label>
+                <div class="select-wrapper">
+                  <select id="launcher-action-select">
+                    <option value="close">Close launcher</option>
+                    <option value="keep">Keep launcher open</option>
+                    <option value="hide">Hide launcher (minimize)</option>
+                  </select>
+                </div>
               </div>
 
               <div class="setting-group">
@@ -268,12 +274,7 @@
                   <select id="java-select">
                     <option value="bundled">Use bundled Java (recommended)</option>
                     <option value="system">Use system Java (PATH)</option>
-                    <option value="custom">Custom path...</option>
                   </select>
-                  <div id="java-custom-path" class="hidden">
-                    <input type="text" placeholder="C:\Program Files\Java\bin\java.exe" disabled />
-                    <button id="btn-browse-java" class="btn btn-secondary">Browse...</button>
-                  </div>
                 </div>
               </div>
             </section>

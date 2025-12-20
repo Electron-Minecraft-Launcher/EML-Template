@@ -1,16 +1,25 @@
-import type { Account } from 'eml-lib'
+import type { IGameSettings, ISystemInfo } from '../electron/handlers/settings'
+import type { IAuthResponse } from '../electron/handlers/auth'
 
 declare global {
   interface Window {
     api: {
       auth: {
-        login: () => Promise<{ success: true; account: Account } | { success: false; error: string }>
-        refresh: () => Promise<{ success: true; account: Account } | { success: false; error?: string }>
+        login: () => Promise<IAuthResponse>
+        refresh: () => Promise<IAuthResponse>
         logout: () => Promise<{ success: boolean }>
       }
       game: {
         launch: () => Promise<void>
         onProgress: (callback: any) => void
+      }
+      settings: {
+        get: () => Promise<IGameSettings>
+        set: (s: IGameSettings) => Promise<boolean>
+        pickJava: () => Promise<string | null>
+      }
+      system: {
+        getInfo: () => Promise<ISystemInfo>
       }
     }
   }
@@ -37,3 +46,12 @@ export const game = {
   }
 }
 
+export const settings = {
+  get: () => window.api.settings.get(),
+  set: (s: IGameSettings) => window.api.settings.set(s),
+  pickJava: () => window.api.settings.pickJava()
+}
+
+export const system = {
+  getInfo: () => window.api.system.getInfo()
+}

@@ -213,15 +213,6 @@ input[type="range"] {
   gap: 10px;
 }
 
-#java-custom-path {
-  display: flex;
-  gap: 10px;
-
-  &.hidden {
-    display: none;
-  }
-}
-
 /* --- ACCOUNT SETTINGS --- */
 .account-card {
   background: rgba(255, 255, 255, 0.03);

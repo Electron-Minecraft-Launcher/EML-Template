@@ -1,26 +1,49 @@
 import { setView, closeOverlay } from '../state'
-import { auth } from '../ipc'
+import { auth, settings, system } from '../ipc'
 import { Dialog } from './dialog'
+import type { IGameSettings } from '../../electron/handlers/settings'
 
-export function initSettings() {
+const resolutionList = [
+  { label: 'Auto (default)', value: '854x480', width: 854, height: 480 },
+  { label: 'Fullscreen', value: 'fullscreen', width: 854, height: 480 },
+  { label: '2560x1440 (1440p)', value: '2560x1440', width: 2560, height: 1440 },
+  { label: '1920x1080 (1080p)', value: '1920x1080', width: 1920, height: 1080 },
+  { label: '1600x900', value: '1600x900', width: 1600, height: 900 },
+  { label: '1366x768', value: '1366x768', width: 1366, height: 768 },
+  { label: '1280x1024', value: '1280x1024', width: 1280, height: 1024 },
+  { label: '1280x720 (720p)', value: '1280x720', width: 1280, height: 720 },
+  { label: '1024x768', value: '1024x768', width: 1024, height: 768 },
+  { label: '800x600', value: '800x600', width: 800, height: 600 }
+]
+
+let currentSettings: IGameSettings
+
+export async function initSettings() {
+  const sysInfo = await system.getInfo()
+  currentSettings = await settings.get()
+
+  initUIListeners()
+  initDualSlider(sysInfo.totalMem)
+  initFormValues(sysInfo.resolution)
+}
+
+function initUIListeners() {
   const closeBtn = document.getElementById('btn-close-settings')
+  const tabContents = document.querySelectorAll('.tab-content')
+  const tabButtons = document.querySelectorAll('.nav-btn')
   const logoutBtn = document.getElementById('btn-logout')
 
-  closeBtn?.addEventListener('click', () => {
+  closeBtn?.addEventListener('click', async () => {
+    await saveSettings()
     closeOverlay('settings')
   })
 
   logoutBtn?.addEventListener('click', async () => {
-    console.log('Logout button clicked')
     if (
-      await Dialog.show(
-        'Are you sure you want to logout?',
-        [
-          { text: 'Cancel', type: 'cancel' },
-          { text: 'Logout', type: 'danger' }
-        ],
-        'Log out'
-      )
+      await Dialog.show('Log out?', [
+        { text: 'Cancel', type: 'cancel' },
+        { text: 'Logout', type: 'danger' }
+      ])
     ) {
       await auth.logout()
       closeOverlay('settings')
@@ -28,23 +51,17 @@ export function initSettings() {
     }
   })
 
-  const tabButtons = document.querySelectorAll('.nav-btn')
-  const tabContents = document.querySelectorAll('.tab-content')
   tabButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       tabButtons.forEach((b) => b.classList.remove('active'))
       btn.classList.add('active')
       const targetTab = btn.getAttribute('data-tab')
-      tabContents.forEach((content) => {
-        content.id === `tab-${targetTab}` ? content.classList.add('active') : content.classList.remove('active')
-      })
+      tabContents.forEach((c) => (c.id === `tab-${targetTab}` ? c.classList.add('active') : c.classList.remove('active')))
     })
   })
-
-  initDualSlider()
 }
 
-function initDualSlider() {
+function initDualSlider(maxRamSystem: number) {
   const minInput = document.getElementById('ram-min') as HTMLInputElement
   const maxInput = document.getElementById('ram-max') as HTMLInputElement
   const fill = document.getElementById('ram-track-fill')
@@ -53,8 +70,10 @@ function initDualSlider() {
 
   if (!minInput || !maxInput || !fill) return
 
-  const gap = 0.5
+  minInput.max = maxRamSystem.toString()
+  maxInput.max = maxRamSystem.toString()
 
+  const gap = 0.5
   const updateSlider = (e?: Event) => {
     let minVal = parseFloat(minInput.value)
     let maxVal = parseFloat(maxInput.value)
@@ -72,7 +91,7 @@ function initDualSlider() {
     if (minLabel) minLabel.innerText = `${minVal} GB`
     if (maxLabel) maxLabel.innerText = `${maxVal} GB`
 
-    const range = parseFloat(minInput.max) - parseFloat(minInput.min)
+    const range = maxRamSystem - parseFloat(minInput.min)
     const minPercent = ((minVal - parseFloat(minInput.min)) / range) * 100
     const maxPercent = ((maxVal - parseFloat(maxInput.min)) / range) * 100
 
@@ -82,23 +101,65 @@ function initDualSlider() {
 
   minInput.addEventListener('input', updateSlider)
   maxInput.addEventListener('input', updateSlider)
-
   updateSlider()
-  initJavaSelector()
 }
 
-function initJavaSelector() {
-  const select = document.getElementById('java-select') as HTMLSelectElement
-  const customDiv = document.getElementById('java-custom-path')
+function initFormValues(resolution: { width: number; height: number }) {
+  if (!currentSettings) return
 
-  if (!select || !customDiv) return
+  const minInput = document.getElementById('ram-min') as HTMLInputElement
+  const maxInput = document.getElementById('ram-max') as HTMLInputElement
+  const resolutionSelect = document.getElementById('resolution-select') as HTMLSelectElement
+  const javaSelect = document.getElementById('java-select') as HTMLSelectElement
 
-  select.addEventListener('change', () => {
-    if (select.value === 'custom') {
-      customDiv.classList.remove('hidden')
-    } else {
-      customDiv.classList.add('hidden')
-    }
-  })
+  if (minInput) minInput.value = currentSettings.memory.min.replace('G', '')
+  if (maxInput) maxInput.value = currentSettings.memory.max.replace('G', '')
+  if (resolutionSelect) {
+    const availableResolutions = getAvailableResolutions(resolution)
+    resolutionSelect.innerHTML = ''
+    availableResolutions.forEach((res) => {
+      const option = document.createElement('option')
+      option.value = res.value
+      option.innerText = res.label
+      resolutionSelect.appendChild(option)
+    })
+
+    resolutionSelect.value = currentSettings.resolution.fullscreen
+      ? 'fullscreen'
+      : `${currentSettings.resolution.width}x${currentSettings.resolution.height}`
+  }
+  if (javaSelect) javaSelect.value = currentSettings.java === 'bundled' ? 'bundled' : 'custom'
+
+  minInput.dispatchEvent(new Event('input'))
+}
+
+async function saveSettings() {
+  const minInput = document.getElementById('ram-min') as HTMLInputElement
+  const maxInput = document.getElementById('ram-max') as HTMLInputElement
+  const launcherActionSelect = document.getElementById('launcher-action-select') as HTMLSelectElement
+  const resolutionSelect = document.getElementById('resolution-select') as HTMLSelectElement
+  const javaSelect = document.getElementById('java-select') as HTMLSelectElement
+
+  const newSettings: IGameSettings = {
+    ...currentSettings,
+    memory: {
+      min: `${minInput.value}G`,
+      max: `${maxInput.value}G`
+    },
+    resolution: {
+      height: resolutionList.find((r) => r.value === resolutionSelect.value)?.height ?? 854,
+      width: resolutionList.find((r) => r.value === resolutionSelect.value)?.width ?? 480,
+      fullscreen: resolutionSelect.value === 'fullscreen'
+    },
+    java: javaSelect.value === 'bundled' ? 'bundled' : 'path',
+    launcherAction: launcherActionSelect.value as 'close' | 'keep' | 'hide'
+  }
+
+  await settings.set(newSettings)
+  currentSettings = newSettings
+}
+
+function getAvailableResolutions(systemResolution: { width: number; height: number }) {
+  return resolutionList.filter((res) => res.width <= systemResolution.width && res.height <= systemResolution.height)
 }
 

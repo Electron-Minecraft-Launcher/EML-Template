@@ -1,9 +1,12 @@
 import { ipcMain, app, session } from 'electron'
-import { Account, MicrosoftAuth } from 'eml-lib'
+import { MicrosoftAuth } from 'eml-lib'
+import type { Account } from 'eml-lib'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 
 const sessionPath = path.join(app.getPath('userData'), 'session.json')
+
+export type IAuthResponse = { success: true; account: Account } | { success: false; error: string }
 
 export function registerAuthHandlers(mainWindow: Electron.BrowserWindow) {
   const auth = new MicrosoftAuth(mainWindow)

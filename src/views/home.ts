@@ -1,5 +1,5 @@
-import { setView } from '../state'
-import { game } from '../ipc'
+import { setView, getUser } from '../state'
+import { game, settings } from '../ipc'
 
 export function initHome() {
   const playBtn = document.getElementById('btn-play')
@@ -10,7 +10,6 @@ export function initHome() {
   const progressPercent = document.getElementById('progress-percent')
 
   settingsBtn?.addEventListener('click', () => {
-    
     setView('settings')
   })
 
@@ -18,6 +17,24 @@ export function initHome() {
     if (playBtn) playBtn.style.display = 'none'
     if (progressContainer) progressContainer.classList.remove('hidden')
 
+    const user = getUser()
+    if (!user) return
+
+    // 2. Récupérer la configuration
+    const config = await settings.get()
+
+    // 3. Construire le message de confirmation
+    const message = `
+Ready to launch the game with the following settings:
+      
+👤 Account: ${user.name}
+🧠 RAM: ${config.memory.min} - ${config.memory.max}
+☕️ Java: ${config.java}
+🖥️ Resolution: ${config.resolution.width}x${config.resolution.height}
+🚀 Action on launch: ${config.launcherAction}
+    `
+
+    console.log(message)
     await game.launch()
   })
 
