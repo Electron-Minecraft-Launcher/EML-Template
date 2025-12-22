@@ -24,6 +24,7 @@ function createWindow() {
     minWidth: 1000,
     minHeight: 700,
     title: APP_TITLE,
+    autoHideMenuBar: true,
     backgroundColor: BG_COLOR,
     show: false,
 

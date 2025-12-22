@@ -62,6 +62,7 @@ function initUIListeners() {
 }
 
 function initDualSlider(maxRamSystem: number) {
+  maxRamSystem = maxRamSystem > 16 ? 16 : maxRamSystem
   const minInput = document.getElementById('ram-min') as HTMLInputElement
   const maxInput = document.getElementById('ram-max') as HTMLInputElement
   const fill = document.getElementById('ram-track-fill')
