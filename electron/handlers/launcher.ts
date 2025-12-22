@@ -1,6 +1,6 @@
 import { ipcMain, BrowserWindow, app } from 'electron'
 import { Launcher } from 'eml-lib'
-import type { Account} from 'eml-lib'
+import type { Account } from 'eml-lib'
 import type { IGameSettings } from './settings'
 
 export function registerLauncherHandlers(mainWindow: BrowserWindow) {
@@ -11,7 +11,7 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     console.log('Launching')
 
     const launcher = new Launcher({
-      url: 'http://localhost:8080',
+      url: 'http://localhost:5173',
       serverId: 'goldfrite',
       account: account,
       cleaning: {
@@ -125,12 +125,11 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
       console.log(`\nLaunching Minecraft ${info.version} (${info.type}${info.loaderVersion ? ` ${info.loaderVersion}` : ''})...`)
       mainWindow.webContents.send('game:launch_launch', info)
       if (settings.launcherAction === 'close') {
-        setTimeout(() => app.quit(), 15000)
+        setTimeout(() => app.quit(), 5000)
       } else if (settings.launcherAction === 'hide') {
-        mainWindow.hide()
-      } else if (settings.launcherAction === 'keep') {
-        mainWindow.webContents.send('game:launched')
+        setTimeout(() => mainWindow.minimize(), 5000)
       }
+      mainWindow.webContents.send('game:launched')
     })
     launcher.on('launch_data', (message) => {
       console.log(message)

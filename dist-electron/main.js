@@ -9247,7 +9247,7 @@ function registerLauncherHandlers(mainWindow2) {
     const java2 = settings.java === "system" ? { install: "manual", absolutePath: "java" } : { install: "auto" };
     console.log("Launching");
     const launcher2 = new emlLibExports.Launcher({
-      url: "http://localhost:8080",
+      url: "http://localhost:5173",
       serverId: "goldfrite",
       account,
       cleaning: {
@@ -9355,12 +9355,11 @@ Installing loader ${loader.type} ${loader.loaderVersion}...`);
 Launching Minecraft ${info.version} (${info.type}${info.loaderVersion ? ` ${info.loaderVersion}` : ""})...`);
       mainWindow2.webContents.send("game:launch_launch", info);
       if (settings.launcherAction === "close") {
-        setTimeout(() => require$$0.app.quit(), 15e3);
+        setTimeout(() => require$$0.app.quit(), 5e3);
       } else if (settings.launcherAction === "hide") {
-        mainWindow2.hide();
-      } else if (settings.launcherAction === "keep") {
-        mainWindow2.webContents.send("game:launched");
+        setTimeout(() => mainWindow2.minimize(), 5e3);
       }
+      mainWindow2.webContents.send("game:launched");
     });
     launcher2.on("launch_data", (message) => {
       console.log(message);
@@ -9453,6 +9452,48 @@ function registerServerHandlers() {
     }
   });
 }
+function registerNewsHandlers() {
+  require$$0.ipcMain.handle("news:get-news", async (_event, url) => {
+    try {
+      const news2 = new emlLibExports.News("http://localhost:5173");
+      const feed = await news2.getNews();
+      return feed;
+    } catch (err) {
+      console.error("Failed to fetch news:", err);
+      return [];
+    }
+  });
+  require$$0.ipcMain.handle("news:get-categories", async (_event, url) => {
+    try {
+      const news2 = new emlLibExports.News(url);
+      const feed = await news2.getCategories();
+      return feed;
+    } catch (err) {
+      console.error("Failed to fetch news:", err);
+      return [];
+    }
+  });
+}
+function registerBackgroundHandlers() {
+  require$$0.ipcMain.handle("background:get", async () => {
+    new emlLibExports.Background("http://localhost:5173");
+    try {
+      const currentBackground = await getBackground();
+      return currentBackground;
+    } catch (err) {
+      console.error("Failed to fetch background:", err);
+      return null;
+    }
+  });
+}
+async function getBackground() {
+  console.log("Fetching background from API...");
+  const res = await fetch(`http://localhost:5173/api/background`).then((res2) => res2.json()).catch((err) => {
+    throw err;
+  });
+  console.log(res);
+  return res ?? null;
+}
 const APP_TITLE = "EML Template";
 const BG_COLOR = "#121212";
 const __filename$1 = node_url.fileURLToPath(typeof document === "undefined" ? require("url").pathToFileURL(__filename).href : _documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === "SCRIPT" && _documentCurrentScript.src || new URL("main.js", document.baseURI).href);
@@ -9462,6 +9503,7 @@ if (process.env.VITE_DEV_SERVER_URL) {
   require$$0.app.setName(APP_TITLE);
 }
 function createWindow() {
+  require$$0.nativeTheme.themeSource = "dark";
   mainWindow = new require$$0.BrowserWindow({
     width: 1280,
     height: 720,
@@ -9479,6 +9521,13 @@ function createWindow() {
       devTools: true
     }
   });
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith("https:") || url.startsWith("http:")) {
+      require$$0.shell.openExternal(url);
+    }
+    return { action: "deny" };
+  });
+  mainWindow.removeMenu();
   mainWindow.once("ready-to-show", () => {
     mainWindow?.show();
   });
@@ -9516,19 +9565,11 @@ function configureAppMenu() {
     ] : [],
     {
       label: "File",
-      submenu: [
-        { role: "close" }
-      ]
+      submenu: [{ role: "close" }]
     },
     {
       label: "View",
-      submenu: [
-        { role: "reload" },
-        { role: "forceReload" },
-        { role: "toggleDevTools" },
-        { type: "separator" },
-        { role: "togglefullscreen" }
-      ]
+      submenu: [{ role: "reload" }, { role: "forceReload" }, { role: "toggleDevTools" }, { type: "separator" }, { role: "togglefullscreen" }]
     }
   ];
   const menu = require$$0.Menu.buildFromTemplate(template);
@@ -9540,6 +9581,8 @@ require$$0.app.whenReady().then(() => {
   if (mainWindow) {
     registerAuthHandlers(mainWindow);
     registerServerHandlers();
+    registerNewsHandlers();
+    registerBackgroundHandlers();
     registerLauncherHandlers(mainWindow);
     registerSettingsHandlers();
   }

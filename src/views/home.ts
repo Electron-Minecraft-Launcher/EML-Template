@@ -1,5 +1,34 @@
 import { setView, getUser } from '../state'
-import { game, server, settings } from '../ipc'
+import { game, news, server, settings } from '../ipc'
+import type { FormattedNews } from '../../electron/handlers/news'
+import { parse, marked } from 'marked'
+import DOMPurify from 'dompurify'
+
+marked.use({
+  renderer: {
+    link(link) {
+      const href = link.href ?? '#'
+      const titleAttr = link.title ? ` title="${link.title}"` : ''
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer"${titleAttr}>${link.text}</a>`
+    }
+  }
+})
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+const parseNews = (rawContent: string) => DOMPurify.sanitize(marked.parse(rawContent) as string, {
+  ADD_ATTR: ['target']
+})
+
+const backgroundColor = (color: string) => {
+  const r = parseInt(color.slice(1, 3), 16)
+  const g = parseInt(color.slice(3, 5), 16)
+  const b = parseInt(color.slice(5, 7), 16)
+  return `rgba(${r}, ${g}, ${b}, 0.1)`
+}
 
 export function initHome() {
   const playBtn = document.getElementById('btn-play')
@@ -11,6 +40,7 @@ export function initHome() {
   const statusDot = document.getElementById('server-status-dot')
   const statusText = document.getElementById('server-status-text')
   const playerCount = document.getElementById('player-count')
+  const newsList = document.getElementById('news-list')
 
   let totalToDownload = 0
   let totalDownloadedByType: { type: string; size: number }[] = []
@@ -45,7 +75,52 @@ export function initHome() {
     }
   }
 
+  const loadNews = async () => {
+    if (!newsList) return
+    newsList.innerHTML = '<div style="text-align:center; padding: 20px; color: #888;">Loading news...</div>'
+    const feed = await news.getNews()
+
+    newsList.innerHTML = ''
+
+    if (!feed || feed.length === 0) {
+      newsList.innerHTML = '<div style="text-align:center; color: #888;">No news available.</div>'
+      return
+    }
+
+    feed.forEach((item: any) => {
+      let tagsHTML = ''
+      item.tags.forEach((tag: any) => {
+        tagsHTML += `<span class="tag" style="color: ${tag.color}; background-color: ${backgroundColor(tag.color)}">${tag.name}</span>`
+      })
+      const articleHTML = `
+        <article class="news-article">
+          <div class="article-meta">
+            <div class="author">
+              <img src="https://minotar.net/helm/${item.author.username}/24" alt="Author" />
+              <span>${item.author.username ?? 'Admin Team'}</span>
+            </div>
+            <span class="separator">•</span>
+            <span class="date">${formatDate(item.createdAt)}</span>
+            <span class="separator">•</span>
+            <div class="tags-container">${tagsHTML}</div>
+          </div>
+
+          <h3>${item.title}</h3>
+          
+          ${item.image ? `<img src="${item.image}" alt="News Image" onerror="this.style.display='none'"/>` : ''}
+
+          <div class="article-content">
+            ${parseNews(item.content)}
+          </div>
+        </article>
+      `
+
+      newsList.insertAdjacentHTML('beforeend', articleHTML)
+    })
+  }
+
   updateServerStatus()
+  loadNews()
 
   const setIndeterminate = (active: boolean) => {
     if (!progressBar || !progressPercent) return

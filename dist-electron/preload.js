@@ -42,6 +42,13 @@ electron.contextBridge.exposeInMainWorld("api", {
   server: {
     getStatus: (ip, port) => electron.ipcRenderer.invoke("server:status", ip, port)
   },
+  news: {
+    getNews: () => electron.ipcRenderer.invoke("news:get-news"),
+    getCategories: () => electron.ipcRenderer.invoke("news:get-categories")
+  },
+  background: {
+    get: () => electron.ipcRenderer.invoke("background:get")
+  },
   settings: {
     get: () => electron.ipcRenderer.invoke("settings:get"),
     set: (s) => electron.ipcRenderer.invoke("settings:set", s),

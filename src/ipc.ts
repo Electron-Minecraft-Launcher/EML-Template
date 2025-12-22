@@ -1,7 +1,8 @@
 import type { IGameSettings, ISystemInfo } from '../electron/handlers/settings'
 import type { IAuthResponse } from '../electron/handlers/auth'
-import type { Account, CleanerEvents, DownloaderEvents, FilesManagerEvents, JavaEvents, LauncherEvents, PatcherEvents } from 'eml-lib'
+import type { Account, CleanerEvents, DownloaderEvents, FilesManagerEvents, IBackground, INews, INewsCategory, JavaEvents, LauncherEvents, PatcherEvents } from 'eml-lib'
 import type { ServerStatus } from 'eml-lib/types/status'
+import type { FormattedNews } from '../electron/handlers/news'
 
 declare global {
   interface Window {
@@ -13,6 +14,13 @@ declare global {
       }
       server: {
         getStatus: (ip: string, port?: number) => Promise<ServerStatus | null>
+      }
+      news: {
+        getNews: () => Promise<FormattedNews[]>
+        getCategories: () => Promise<INewsCategory[]>
+      }
+      background: {
+        get: () => Promise<IBackground | null>
       }
       game: {
         launch: (payload: { account: Account; settings: IGameSettings }) => Promise<void>
@@ -72,6 +80,15 @@ export const auth = {
 
 export const server = {
   getStatus: async (ip: string, port?: number) => await window.api.server.getStatus(ip, port)
+}
+
+export const news = {
+  getNews: async () => await window.api.news.getNews(),
+  getCategories: async () => await window.api.news.getCategories()
+}
+
+export const background = {
+  get: async () => await window.api.background.get()
 }
 
 export const game = {

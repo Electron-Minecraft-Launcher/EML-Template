@@ -8,13 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
     <style>
       body {
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.4s ease-in-out;
         background-color: #121212;
+        overflow: hidden;
       }
 
-      body.loaded {
+      body:not(.loaded) div#app {
+        opacity: 0 !important;
+        visibility: hidden;
+        transition: opacity 0.4s ease-in-out;
+      }
+
+      body.loaded div#app {
+        transition: opacity 0.4s ease-in-out;
         opacity: 1;
         visibility: visible;
       }
@@ -22,18 +27,34 @@
       div.view:not(.active) {
         display: none;
       }
+
+      div.loading {
+        position: fixed;
+        top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        background-color: #121212;
+        transition: opacity 0.4s ease-in-out;
+      }
+
+      div.loading.loaded {
+        opacity: 0;
+      }
     </style>
   </head>
   <body>
+    <div id="view-loading" class="loading" data-view="loading">
+      <div class="loading-card">
+        <p class="spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></p>
+        <p class="text">Loading...</p>
+      </div>
+    </div>
+
     <div id="app">
       <div class="app-background"></div>
-
-      <div id="view-loading" class="view active" data-view="loading">
-        <div class="loading-card">
-          <p class="spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></p>
-          <p class="text">Loading...</p>
-        </div>
-      </div>
 
       <div id="view-login" class="view" data-view="login">
         <div class="login-card">
@@ -97,7 +118,7 @@
               </div>
             </div>
 
-            <a class="btn btn-secondary">
+            <a class="btn btn-secondary" href="https://emlproject.qzz.io/shop" target="_blank">
               <i class="fa-fw fa-solid fa-cart-shopping"></i>
               <span>Visit shop</span>
             </a>
@@ -132,9 +153,9 @@
           <div class="news-header">
             <h2>News feed</h2>
             <div class="social-links">
-              <a href="#" class="btn btn-icon-only"><i class="fa-brands fa-discord"></i></a>
-              <a href="#" class="btn btn-icon-only"><i class="fa-brands fa-x-twitter"></i></a>
-              <a href="#" class="btn btn-icon-only"><i class="fa-solid fa-globe"></i></a>
+              <a href="https://discord.gg/YVB4k6HzAY" target="_blank" class="btn btn-icon-only"><i class="fa-brands fa-discord"></i></a>
+              <a href="https://twitter.com/EMLProject" target="_blank" class="btn btn-icon-only"><i class="fa-brands fa-x-twitter"></i></a>
+              <a href="https://emlproject.qzz.io" target="_blank" class="btn btn-icon-only"><i class="fa-solid fa-globe"></i></a>
             </div>
           </div>
 
@@ -253,8 +274,7 @@
 
               <div class="setting-group">
                 <label><i class="fa-fw fa-solid fa-display"></i>&nbsp;&nbsp;Window size</label>
-                <select id="resolution-select">
-                </select>
+                <select id="resolution-select"></select>
               </div>
 
               <div class="setting-group">
@@ -293,7 +313,7 @@
                 </div>
 
                 <div class="account-actions">
-                  <a href="https://www.xbox.com/en-US/live" target="_blank" class="btn btn-secondary">
+                  <a href="https://www.xbox.com/play/user" target="_blank" class="btn btn-secondary">
                     <i class="fa-fw fa-solid fa-external-link-alt"></i><span>Manage Xbox Account</span>
                   </a>
                   <button id="btn-logout" class="btn btn-danger"><i class="fa-fw fa-solid fa-right-from-bracket"></i><span>Log out</span></button>
@@ -335,4 +355,3 @@
     <script type="module" src="/src/app.ts"></script>
   </body>
 </html>
-

@@ -1,10 +1,12 @@
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, Menu, nativeTheme, shell } from 'electron'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { registerAuthHandlers } from './handlers/auth'
 import { registerLauncherHandlers } from './handlers/launcher'
 import { registerSettingsHandlers } from './handlers/settings'
 import { registerServerHandlers } from './handlers/server'
+import { registerNewsHandlers } from './handlers/news'
+import { registerBackgroundHandlers } from './handlers/background'
 
 const APP_TITLE = 'EML Template'
 const BG_COLOR = '#121212'
@@ -19,6 +21,8 @@ if (process.env.VITE_DEV_SERVER_URL) {
 }
 
 function createWindow() {
+  nativeTheme.themeSource = 'dark'
+
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
@@ -28,9 +32,7 @@ function createWindow() {
     autoHideMenuBar: true,
     backgroundColor: BG_COLOR,
     show: false,
-
     icon: path.join(__dirname, '../build/icon.png'),
-
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -38,6 +40,15 @@ function createWindow() {
       devTools: true
     }
   })
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('https:') || url.startsWith('http:')) {
+      shell.openExternal(url)
+    }
+    return { action: 'deny' }
+  })
+
+  mainWindow.removeMenu()
 
   mainWindow.once('ready-to-show', () => {
     mainWindow?.show()
@@ -82,20 +93,12 @@ function configureAppMenu() {
 
     {
       label: 'File',
-      submenu: [
-        { role: 'close' }
-      ]
+      submenu: [{ role: 'close' }]
     },
 
     {
       label: 'View',
-      submenu: [
-        { role: 'reload' },
-        { role: 'forceReload' },
-        { role: 'toggleDevTools' },
-        { type: 'separator' },
-        { role: 'togglefullscreen' }
-      ]
+      submenu: [{ role: 'reload' }, { role: 'forceReload' }, { role: 'toggleDevTools' }, { type: 'separator' }, { role: 'togglefullscreen' }]
     }
   ]
 
@@ -111,6 +114,8 @@ app.whenReady().then(() => {
   if (mainWindow) {
     registerAuthHandlers(mainWindow)
     registerServerHandlers()
+    registerNewsHandlers()
+    registerBackgroundHandlers()
     registerLauncherHandlers(mainWindow)
     registerSettingsHandlers()
   }
@@ -119,4 +124,3 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   app.quit()
 })
-

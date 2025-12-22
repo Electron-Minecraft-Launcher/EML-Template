@@ -1,7 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import type { IGameSettings, ISystemInfo } from './handlers/settings'
 import type { IAuthResponse } from './handlers/auth'
-import type { Account, CleanerEvents, DownloaderEvents, FilesManagerEvents, JavaEvents, LauncherEvents, PatcherEvents } from 'eml-lib'
+import type { Account, CleanerEvents, DownloaderEvents, FilesManagerEvents, IBackground, JavaEvents, LauncherEvents, PatcherEvents } from 'eml-lib'
+import type { ServerStatus } from 'eml-lib/types/status'
+import type { FormattedNews } from './handlers/news'
 
 console.log('Preload script loaded')
 
@@ -64,7 +66,14 @@ contextBridge.exposeInMainWorld('api', {
     patchDebug: (callback: (value: PatcherEvents['patch_debug'][0]) => void) => ipcRenderer.on('game:patch_debug', (_event, value) => callback(value))
   },
   server: {
-    getStatus: (ip: string, port?: number): Promise<any> => ipcRenderer.invoke('server:status', ip, port)
+    getStatus: (ip: string, port?: number): Promise<ServerStatus> => ipcRenderer.invoke('server:status', ip, port)
+  },
+  news: {
+    getNews: (): Promise<FormattedNews[]> => ipcRenderer.invoke('news:get-news'),
+    getCategories: (): Promise<any[]> => ipcRenderer.invoke('news:get-categories')
+  },
+  background: {
+    get: (): Promise<IBackground | null> => ipcRenderer.invoke('background:get')
   },
   settings: {
     get: (): Promise<IGameSettings> => ipcRenderer.invoke('settings:get'),

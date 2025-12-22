@@ -21,6 +21,7 @@ let currentSettings: IGameSettings
 export async function initSettings() {
   const sysInfo = await system.getInfo()
   currentSettings = await settings.get()
+  console.log('Current Settings:', currentSettings)
 
   initUIListeners()
   initDualSlider(sysInfo.totalMem)
@@ -111,6 +112,7 @@ function initFormValues(resolution: { width: number; height: number }) {
   const minInput = document.getElementById('ram-min') as HTMLInputElement
   const maxInput = document.getElementById('ram-max') as HTMLInputElement
   const resolutionSelect = document.getElementById('resolution-select') as HTMLSelectElement
+  const launcherActionSelect = document.getElementById('launcher-action-select') as HTMLSelectElement
   const javaSelect = document.getElementById('java-select') as HTMLSelectElement
 
   if (minInput) minInput.value = currentSettings.memory.min.replace('G', '')
@@ -129,6 +131,7 @@ function initFormValues(resolution: { width: number; height: number }) {
       ? 'fullscreen'
       : `${currentSettings.resolution.width}x${currentSettings.resolution.height}`
   }
+  if (launcherActionSelect) launcherActionSelect.value = currentSettings.launcherAction
   if (javaSelect) javaSelect.value = currentSettings.java === 'bundled' ? 'bundled' : 'custom'
 
   minInput.dispatchEvent(new Event('input'))
