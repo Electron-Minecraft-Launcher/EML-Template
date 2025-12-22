@@ -9487,12 +9487,30 @@ function registerBackgroundHandlers() {
   });
 }
 async function getBackground() {
-  console.log("Fetching background from API...");
   const res = await fetch(`http://localhost:5173/api/background`).then((res2) => res2.json()).catch((err) => {
     throw err;
   });
-  console.log(res);
   return res ?? null;
+}
+function registerMaintenanceHandlers() {
+  require$$0.ipcMain.handle("maintenance:get", async () => {
+    new emlLibExports.Maintenance("http://localhost:5173");
+    try {
+      const status = await getMaintenance();
+      console.log("Fetched maintenance status:", status);
+      return status?.startTime && new Date(status.startTime) <= /* @__PURE__ */ new Date() ? status : null;
+    } catch (err) {
+      console.error("Failed to fetch maintenance:", err);
+      return null;
+    }
+  });
+}
+async function getMaintenance() {
+  let res = await fetch(`http://localhost:5173/api/maintenance`, { method: "GET" }).then((res2) => res2.json()).catch((err) => {
+    throw err;
+  });
+  if (res.startTime) return res;
+  else return null;
 }
 const APP_TITLE = "EML Template";
 const BG_COLOR = "#121212";
@@ -9527,7 +9545,6 @@ function createWindow() {
     }
     return { action: "deny" };
   });
-  mainWindow.removeMenu();
   mainWindow.once("ready-to-show", () => {
     mainWindow?.show();
   });
@@ -9583,6 +9600,7 @@ require$$0.app.whenReady().then(() => {
     registerServerHandlers();
     registerNewsHandlers();
     registerBackgroundHandlers();
+    registerMaintenanceHandlers();
     registerLauncherHandlers(mainWindow);
     registerSettingsHandlers();
   }

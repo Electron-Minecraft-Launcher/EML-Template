@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import type { IGameSettings, ISystemInfo } from './handlers/settings'
 import type { IAuthResponse } from './handlers/auth'
-import type { Account, CleanerEvents, DownloaderEvents, FilesManagerEvents, IBackground, JavaEvents, LauncherEvents, PatcherEvents } from 'eml-lib'
+import type { Account, CleanerEvents, DownloaderEvents, FilesManagerEvents, IBackground, IMaintenance, JavaEvents, LauncherEvents, PatcherEvents } from 'eml-lib'
 import type { ServerStatus } from 'eml-lib/types/status'
 import type { FormattedNews } from './handlers/news'
 
@@ -74,6 +74,9 @@ contextBridge.exposeInMainWorld('api', {
   },
   background: {
     get: (): Promise<IBackground | null> => ipcRenderer.invoke('background:get')
+  },
+  maintenance: {
+    get: (): Promise<IMaintenance | null> => ipcRenderer.invoke('maintenance:get')
   },
   settings: {
     get: (): Promise<IGameSettings> => ipcRenderer.invoke('settings:get'),

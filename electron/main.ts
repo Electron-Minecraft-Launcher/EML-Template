@@ -7,6 +7,7 @@ import { registerSettingsHandlers } from './handlers/settings'
 import { registerServerHandlers } from './handlers/server'
 import { registerNewsHandlers } from './handlers/news'
 import { registerBackgroundHandlers } from './handlers/background'
+import { registerMaintenanceHandlers } from './handlers/maintenance'
 
 const APP_TITLE = 'EML Template'
 const BG_COLOR = '#121212'
@@ -48,7 +49,7 @@ function createWindow() {
     return { action: 'deny' }
   })
 
-  mainWindow.removeMenu()
+  // mainWindow.removeMenu()
 
   mainWindow.once('ready-to-show', () => {
     mainWindow?.show()
@@ -116,6 +117,7 @@ app.whenReady().then(() => {
     registerServerHandlers()
     registerNewsHandlers()
     registerBackgroundHandlers()
+    registerMaintenanceHandlers()
     registerLauncherHandlers(mainWindow)
     registerSettingsHandlers()
   }

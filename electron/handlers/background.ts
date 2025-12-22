@@ -16,13 +16,11 @@ export function registerBackgroundHandlers() {
 }
 
 async function getBackground() {
-  console.log('Fetching background from API...')
   const res = await fetch(`http://localhost:5173/api/background`)
     .then((res) => res.json() as Promise<{ background: any }>)
     .catch((err) => {
       throw err
     })
-  console.log(res)
 
   return res ?? null
 }

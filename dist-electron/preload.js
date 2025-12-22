@@ -49,6 +49,9 @@ electron.contextBridge.exposeInMainWorld("api", {
   background: {
     get: () => electron.ipcRenderer.invoke("background:get")
   },
+  maintenance: {
+    get: () => electron.ipcRenderer.invoke("maintenance:get")
+  },
   settings: {
     get: () => electron.ipcRenderer.invoke("settings:get"),
     set: (s) => electron.ipcRenderer.invoke("settings:set", s),

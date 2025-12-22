@@ -1,6 +1,6 @@
 import type { IGameSettings, ISystemInfo } from '../electron/handlers/settings'
 import type { IAuthResponse } from '../electron/handlers/auth'
-import type { Account, CleanerEvents, DownloaderEvents, FilesManagerEvents, IBackground, INews, INewsCategory, JavaEvents, LauncherEvents, PatcherEvents } from 'eml-lib'
+import type { Account, CleanerEvents, DownloaderEvents, FilesManagerEvents, IBackground, IMaintenance, INews, INewsCategory, JavaEvents, LauncherEvents, PatcherEvents } from 'eml-lib'
 import type { ServerStatus } from 'eml-lib/types/status'
 import type { FormattedNews } from '../electron/handlers/news'
 
@@ -21,6 +21,9 @@ declare global {
       }
       background: {
         get: () => Promise<IBackground | null>
+      }
+      maintenance: {
+        get: () => Promise<IMaintenance | null>
       }
       game: {
         launch: (payload: { account: Account; settings: IGameSettings }) => Promise<void>
@@ -89,6 +92,10 @@ export const news = {
 
 export const background = {
   get: async () => await window.api.background.get()
+}
+
+export const maintenance = {
+  get: async () => await window.api.maintenance.get()
 }
 
 export const game = {

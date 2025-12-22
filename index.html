@@ -43,6 +43,23 @@
       div.loading.loaded {
         opacity: 0;
       }
+
+      div.maintenance {
+        position: fixed;
+        top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        background-color: #121212;
+        transition: opacity 0.4s ease-in-out;
+        opacity: 0;
+      }
+
+      div.maintenance.loaded {
+        opacity: 1;
+      }
     </style>
   </head>
   <body>
@@ -50,6 +67,15 @@
       <div class="loading-card">
         <p class="spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></p>
         <p class="text">Loading...</p>
+      </div>
+    </div>
+
+    <div id="view-maintenance" class="maintenance" data-view="maintenance">
+      <div class="maintenance-card">
+        <p class="gears"><i class="fa-solid fa-gears"></i></p>
+        <h3>Maintenance</h3>
+        <p class="dates" id="maintenance-dates"></p>
+        <p class="text" id="maintenance-reason"></p>
       </div>
     </div>
 
@@ -321,17 +347,6 @@
               </div>
             </section>
           </main>
-        </div>
-      </div>
-
-      <div id="view-maintenance" class="view overlay" data-view="maintenance">
-        <div class="maintenance-card">
-          <i class="fa-fw fa-solid fa-screwdriver-wrench icon"></i>
-          <h2>Under Maintenance</h2>
-          <p id="maintenance-reason">We are updating the modpack. Back soon!</p>
-          <div class="maintenance-dates">
-            <span><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;End: 18:00</span>
-          </div>
         </div>
       </div>
 
