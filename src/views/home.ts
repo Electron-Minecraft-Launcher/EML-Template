@@ -1,5 +1,5 @@
 import { setView, getUser } from '../state'
-import { game, settings } from '../ipc'
+import { game, server, settings } from '../ipc'
 
 export function initHome() {
   const playBtn = document.getElementById('btn-play')
@@ -8,8 +8,44 @@ export function initHome() {
   const progressBar = document.getElementById('progress-bar')
   const progressLabel = document.getElementById('progress-label')
   const progressPercent = document.getElementById('progress-percent')
+  const statusDot = document.getElementById('server-status-dot')
+  const statusText = document.getElementById('server-status-text')
+  const playerCount = document.getElementById('player-count')
+
   let totalToDownload = 0
   let totalDownloadedByType: { type: string; size: number }[] = []
+
+  const updateServerStatus = async () => {
+    if (statusDot) {
+      statusDot.classList.remove('online', 'offline')
+      statusDot.classList.add('pinging')
+    }
+    if (statusText) statusText.innerHTML = 'Pinging...'
+    if (playerCount) playerCount.innerHTML = ''
+
+    const status = await server.getStatus('mc.hypixel.net', 25565)
+
+    if (status) {
+      if (statusDot) {
+        statusDot.classList.remove('pinging', 'offline')
+        statusDot.classList.add('online')
+      }
+      if (statusText) statusText.innerHTML = 'Online'
+
+      if (playerCount) {
+        playerCount.innerHTML = `<i class="fa-fw fa-solid fa-users"></i>&nbsp;&nbsp;${status.players.online.toLocaleString()} / ${status.players.max.toLocaleString()}`
+      }
+    } else {
+      if (statusDot) {
+        statusDot.classList.remove('pinging', 'online')
+        statusDot.classList.add('offline')
+      }
+      if (statusText) statusText.innerHTML = 'Offline'
+      if (playerCount) playerCount.innerHTML = ''
+    }
+  }
+
+  updateServerStatus()
 
   const setIndeterminate = (active: boolean) => {
     if (!progressBar || !progressPercent) return

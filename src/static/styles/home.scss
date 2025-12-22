@@ -131,12 +131,36 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #4caf50;
-    box-shadow: 0 0 8px #4caf50;
+
+    &.pinging {
+      background-color: #ff9800;
+      box-shadow: 0 0 8px #ff9800;
+      animation: pinging-glow 2s infinite;
+    }
+
+    &.online {
+      background-color: #4caf50;
+      box-shadow: 0 0 8px #4caf50;
+    }
+
+   &.offline {
+      background-color: #f04747;
+    }
   }
 
   .player-count {
     color: var(--text-muted);
+  }
+}
+
+@keyframes pinging-glow {
+  0%, 100% {
+    box-shadow: 0 0 0px #ff9800;
+    opacity: 0.5
+  }
+  50% {
+    box-shadow: 0 0 8px #ff9800;
+    opacity: 1;
   }
 }
 

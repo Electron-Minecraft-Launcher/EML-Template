@@ -63,6 +63,9 @@ contextBridge.exposeInMainWorld('api', {
       ipcRenderer.on('game:launch_debug', (_event, value) => callback(value)),
     patchDebug: (callback: (value: PatcherEvents['patch_debug'][0]) => void) => ipcRenderer.on('game:patch_debug', (_event, value) => callback(value))
   },
+  server: {
+    getStatus: (ip: string, port?: number): Promise<any> => ipcRenderer.invoke('server:status', ip, port)
+  },
   settings: {
     get: (): Promise<IGameSettings> => ipcRenderer.invoke('settings:get'),
     set: (s: IGameSettings): Promise<boolean> => ipcRenderer.invoke('settings:set', s),
