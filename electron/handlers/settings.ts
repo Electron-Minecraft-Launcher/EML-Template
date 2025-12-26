@@ -11,6 +11,7 @@ export interface ISystemInfo {
     width: number
     height: number
   }
+  version: string
 }
 
 export interface IGameSettings {
@@ -75,7 +76,8 @@ export function registerSettingsHandlers() {
 
     return {
       totalMem: totalMemGB,
-      resolution: { width, height }
+      resolution: { width, height },
+      version: app.getVersion()
     }
   })
 
