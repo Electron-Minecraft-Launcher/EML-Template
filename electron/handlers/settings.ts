@@ -79,7 +79,7 @@ export function registerSettingsHandlers() {
     }
   })
 
-  ipcMain.handle('settings:pick-java', async () => {
+  ipcMain.handle('settings:pick_java', async () => {
     const result = await dialog.showOpenDialog({
       properties: ['openFile'],
       filters: [{ name: 'Java Executable', extensions: ['exe', 'bin', ''] }]

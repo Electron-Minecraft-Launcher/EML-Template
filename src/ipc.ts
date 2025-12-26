@@ -1,8 +1,21 @@
 import type { IGameSettings, ISystemInfo } from '../electron/handlers/settings'
 import type { IAuthResponse } from '../electron/handlers/auth'
-import type { Account, CleanerEvents, DownloaderEvents, FilesManagerEvents, IBackground, IMaintenance, INews, INewsCategory, JavaEvents, LauncherEvents, PatcherEvents } from 'eml-lib'
+import type {
+  Account,
+  BootstrapsEvents,
+  CleanerEvents,
+  DownloaderEvents,
+  FilesManagerEvents,
+  IBackground,
+  IBootstraps,
+  IMaintenance,
+  INews,
+  INewsCategory,
+  JavaEvents,
+  LauncherEvents,
+  PatcherEvents
+} from 'eml-lib'
 import type { ServerStatus } from 'eml-lib/types/status'
-import type { FormattedNews } from '../electron/handlers/news'
 
 declare global {
   interface Window {
@@ -16,7 +29,7 @@ declare global {
         getStatus: (ip: string, port?: number) => Promise<ServerStatus | null>
       }
       news: {
-        getNews: () => Promise<FormattedNews[]>
+        getNews: () => Promise<INews[]>
         getCategories: () => Promise<INewsCategory[]>
       }
       background: {
@@ -24,6 +37,14 @@ declare global {
       }
       maintenance: {
         get: () => Promise<IMaintenance | null>
+      }
+      bootstraps: {
+        check: () => Promise<IBootstraps>
+        download: () => Promise<string>
+        install: () => Promise<void>
+        downloadProgress: (callback: (value: DownloaderEvents['download_progress'][0]) => void) => void
+        downloadEnd: (callback: (value: DownloaderEvents['download_end'][0]) => void) => void
+        error: (callback: (value: BootstrapsEvents['bootstraps_error'][0]) => void) => void
       }
       game: {
         launch: (payload: { account: Account; settings: IGameSettings }) => Promise<void>
@@ -98,6 +119,15 @@ export const maintenance = {
   get: async () => await window.api.maintenance.get()
 }
 
+export const bootstraps = {
+  check: async () => await window.api.bootstraps.check(),
+  download: async () => await window.api.bootstraps.download(),
+  install: async () => await window.api.bootstraps.install(),
+  downloadProgress: (callback: (value: DownloaderEvents['download_progress'][0]) => void) => window.api.bootstraps.downloadProgress(callback),
+  downloadEnd: (callback: (value: DownloaderEvents['download_end'][0]) => void) => window.api.bootstraps.downloadEnd(callback),
+  error: (callback: (value: BootstrapsEvents['bootstraps_error'][0]) => void) => window.api.bootstraps.error(callback)
+}
+
 export const game = {
   launch: async (payload: { account: Account; settings: IGameSettings }) => await window.api.game.launch(payload),
   launchComputeDownload: (callback: () => void) => window.api.game.launchComputeDownload(callback),
@@ -138,3 +168,4 @@ export const settings = {
 export const system = {
   getInfo: () => window.api.system.getInfo()
 }
+

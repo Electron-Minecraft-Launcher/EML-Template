@@ -1,18 +1,12 @@
 import { ipcMain } from 'electron'
 import { News } from 'eml-lib'
-import type { INews, INewsCategory, INewsTag } from 'eml-lib'
-
-export type FormattedNews = INews & {
-  tags: INewsTag[]
-  categories: INewsCategory[]
-  author: { id: string; username: string }
-}
+import type { INews} from 'eml-lib'
 
 export function registerNewsHandlers() {
-  ipcMain.handle('news:get-news', async (_event, url: string) => {
+  ipcMain.handle('news:get_news', async () => {
     try {
-      const news = new News('http://localhost:5173')
-      const feed = (await news.getNews()) as FormattedNews[]
+      const news = new News('http://localhost:8080')
+      const feed = (await news.getNews()) as INews[]
       return feed
     } catch (err) {
       console.error('Failed to fetch news:', err)
@@ -20,9 +14,9 @@ export function registerNewsHandlers() {
     }
   })
 
-  ipcMain.handle('news:get-categories', async (_event, url: string) => {
+  ipcMain.handle('news:get_categories', async () => {
     try {
-      const news = new News(url)
+      const news = new News('http://localhost:8080')
       const feed = await news.getCategories()
       return feed
     } catch (err) {
@@ -31,3 +25,4 @@ export function registerNewsHandlers() {
     }
   })
 }
+

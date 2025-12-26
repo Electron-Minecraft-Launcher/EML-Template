@@ -21,7 +21,6 @@ let currentSettings: IGameSettings
 export async function initSettings() {
   const sysInfo = await system.getInfo()
   currentSettings = await settings.get()
-  console.log('Current Settings:', currentSettings)
 
   initUIListeners()
   initDualSlider(sysInfo.totalMem)
@@ -63,7 +62,7 @@ function initUIListeners() {
 }
 
 function initDualSlider(maxRamSystem: number) {
-  maxRamSystem = maxRamSystem > 16 ? 16 : maxRamSystem
+  maxRamSystem = Math.min(maxRamSystem, 16)
   const minInput = document.getElementById('ram-min') as HTMLInputElement
   const maxInput = document.getElementById('ram-max') as HTMLInputElement
   const fill = document.getElementById('ram-track-fill')

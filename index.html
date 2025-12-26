@@ -28,7 +28,9 @@
         display: none;
       }
 
-      div.loading {
+      div.loading,
+      div.maintenance,
+      div.update {
         position: fixed;
         top: 0;
         display: flex;
@@ -38,26 +40,23 @@
         width: 100vw;
         background-color: #121212;
         transition: opacity 0.4s ease-in-out;
+      }
+
+      div.loading {
+        opacity: 1;
       }
 
       div.loading.loaded {
         opacity: 0;
       }
 
-      div.maintenance {
-        position: fixed;
-        top: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        width: 100vw;
-        background-color: #121212;
-        transition: opacity 0.4s ease-in-out;
+      div.maintenance,
+      div.update {
         opacity: 0;
       }
 
-      div.maintenance.loaded {
+      div.maintenance.loaded,
+      div.update.loaded {
         opacity: 1;
       }
     </style>
@@ -76,6 +75,23 @@
         <h3>Maintenance</h3>
         <p class="dates" id="maintenance-dates"></p>
         <p class="text" id="maintenance-reason"></p>
+      </div>
+    </div>
+
+    <div id="view-update" class="update" data-view="update">
+      <div class="maintenance-card">
+        <p class="up"><i class="fa-solid fa-circle-up"></i></p>
+        <h3>An update is available</h3>
+        <p class="text" id="update-text">Please wait while we update your launcher...</p>
+        <div class="progress-container" id="update-progress-container">
+          <div class="progress-info">
+            <span id="update-progress-label">Downloading...</span>
+            <span id="update-progress-percent">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="update-progress-bar"></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -162,13 +178,13 @@
             <div class="launch-area">
               <button id="btn-play">PLAY</button>
 
-              <div class="progress-container hidden" id="progress-container">
+              <div class="progress-container hidden" id="launch-progress-container">
                 <div class="progress-info">
-                  <span id="progress-label">Downloading...</span>
-                  <span id="progress-percent">0%</span>
+                  <span id="launch-progress-label">Downloading...</span>
+                  <span id="launch-progress-percent">0%</span>
                 </div>
                 <div class="progress-bar-bg">
-                  <div class="progress-bar-fill" id="progress-bar"></div>
+                  <div class="progress-bar-fill" id="launch-progress-bar"></div>
                 </div>
               </div>
             </div>
@@ -370,3 +386,4 @@
     <script type="module" src="/src/app.ts"></script>
   </body>
 </html>
+

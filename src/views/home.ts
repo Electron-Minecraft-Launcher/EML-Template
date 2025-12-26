@@ -1,7 +1,6 @@
 import { setView, getUser } from '../state'
 import { game, news, server, settings } from '../ipc'
-import type { FormattedNews } from '../../electron/handlers/news'
-import { parse, marked } from 'marked'
+import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 
 marked.use({
@@ -33,10 +32,10 @@ const backgroundColor = (color: string) => {
 export function initHome() {
   const playBtn = document.getElementById('btn-play')
   const settingsBtn = document.getElementById('btn-settings')
-  const progressContainer = document.getElementById('progress-container')
-  const progressBar = document.getElementById('progress-bar')
-  const progressLabel = document.getElementById('progress-label')
-  const progressPercent = document.getElementById('progress-percent')
+  const progressContainer = document.getElementById('launch-progress-container')
+  const progressBar = document.getElementById('launch-progress-bar')
+  const progressLabel = document.getElementById('launch-progress-label')
+  const progressPercent = document.getElementById('launch-progress-percent')
   const statusDot = document.getElementById('server-status-dot')
   const statusText = document.getElementById('server-status-text')
   const playerCount = document.getElementById('player-count')
@@ -175,7 +174,6 @@ Ready to launch the game with the following settings:
     if (progressLabel) progressLabel.innerText = `Downloading files...`
   })
   game.downloadProgress((progress) => {
-    setIndeterminate(false)
     if (!totalDownloadedByType.find((t) => t.type === progress.type)) {
       totalDownloadedByType.push({ type: progress.type, size: progress.downloaded.size })
     } else {
@@ -183,10 +181,9 @@ Ready to launch the game with the following settings:
     }
     if (progressBar && progressLabel && progressPercent) {
       const downloadedSum = totalDownloadedByType.reduce((acc, curr) => acc + curr.size, 0)
-      console.log(progress.type, `=> Downloaded ${Math.round(downloadedSum / 1024)} / ${Math.round(totalToDownload / 1024)} kB`)
-      progressBar.style.width = `${(downloadedSum / totalToDownload) * 100}%`
+      progressBar.style.width = `${Math.min((downloadedSum / totalToDownload) * 100, 100)}%`
       progressLabel.innerText = `Downloading ${progress.type === 'JAVA' ? 'Java' : 'game files'}...`
-      progressPercent.innerText = `${Math.round((downloadedSum / totalToDownload) * 100)}%`
+      progressPercent.innerText = `${Math.round(Math.min((downloadedSum / totalToDownload) * 100, 100))}%`
     }
   })
   game.launchInstallLoader(() => {

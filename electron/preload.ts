@@ -1,11 +1,21 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import type { IGameSettings, ISystemInfo } from './handlers/settings'
 import type { IAuthResponse } from './handlers/auth'
-import type { Account, CleanerEvents, DownloaderEvents, FilesManagerEvents, IBackground, IMaintenance, JavaEvents, LauncherEvents, PatcherEvents } from 'eml-lib'
+import type {
+  Account,
+  BootstrapsEvents,
+  CleanerEvents,
+  DownloaderEvents,
+  FilesManagerEvents,
+  IBackground,
+  IBootstraps,
+  IMaintenance,
+  INews,
+  JavaEvents,
+  LauncherEvents,
+  PatcherEvents
+} from 'eml-lib'
 import type { ServerStatus } from 'eml-lib/types/status'
-import type { FormattedNews } from './handlers/news'
-
-console.log('Preload script loaded')
 
 contextBridge.exposeInMainWorld('api', {
   auth: {
@@ -69,8 +79,8 @@ contextBridge.exposeInMainWorld('api', {
     getStatus: (ip: string, port?: number): Promise<ServerStatus> => ipcRenderer.invoke('server:status', ip, port)
   },
   news: {
-    getNews: (): Promise<FormattedNews[]> => ipcRenderer.invoke('news:get-news'),
-    getCategories: (): Promise<any[]> => ipcRenderer.invoke('news:get-categories')
+    getNews: (): Promise<INews[]> => ipcRenderer.invoke('news:get_news'),
+    getCategories: (): Promise<any[]> => ipcRenderer.invoke('news:get_categories')
   },
   background: {
     get: (): Promise<IBackground | null> => ipcRenderer.invoke('background:get')
@@ -78,12 +88,24 @@ contextBridge.exposeInMainWorld('api', {
   maintenance: {
     get: (): Promise<IMaintenance | null> => ipcRenderer.invoke('maintenance:get')
   },
+  bootstraps: {
+    check: (): Promise<IBootstraps> => ipcRenderer.invoke('bootstraps:check'),
+    download: (): Promise<string> => ipcRenderer.invoke('bootstraps:download'),
+    install: (): Promise<void> => ipcRenderer.invoke('bootstraps:install'),
+    downloadProgress: (callback: (value: DownloaderEvents['download_progress'][0]) => void) =>
+      ipcRenderer.on('bootstraps:download_progress', (_event, value) => callback(value)),
+    downloadEnd: (callback: (value: DownloaderEvents['download_end'][0]) => void) =>
+      ipcRenderer.on('bootstraps:download_end', (_event, value) => callback(value)),
+    error: (callback: (value: BootstrapsEvents['bootstraps_error'][0]) => void) =>
+      ipcRenderer.on('bootstraps:error', (_event, value) => callback(value))
+  },
   settings: {
     get: (): Promise<IGameSettings> => ipcRenderer.invoke('settings:get'),
     set: (s: IGameSettings): Promise<boolean> => ipcRenderer.invoke('settings:set', s),
-    pickJava: (): Promise<string | null> => ipcRenderer.invoke('settings:pick-java')
+    pickJava: (): Promise<string | null> => ipcRenderer.invoke('settings:pick_java')
   },
   system: {
     getInfo: (): Promise<ISystemInfo> => ipcRenderer.invoke('system:info')
   }
 })
+

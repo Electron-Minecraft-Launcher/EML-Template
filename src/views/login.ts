@@ -1,7 +1,6 @@
 import { setUser, setView } from '../state'
 import { auth } from '../ipc'
 import _mockSession from '../_mock-msa'
-import type { Account } from 'eml-lib'
 
 export function initLogin() {
   const btn = document.getElementById('btn-login-ms') as HTMLButtonElement | null
@@ -15,7 +14,6 @@ export function initLogin() {
 
     try {
       // const session = await auth.login()
-
       const session = _mockSession
 
       if (session.success) {

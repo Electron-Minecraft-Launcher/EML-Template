@@ -1,6 +1,7 @@
 import type { Account } from 'eml-lib'
 
 export type ViewName = 'loading' | 'login' | 'home' | 'settings'
+export type BlockingViewName = 'maintenance' | 'update'
 
 let currentAccount: Account | null = null
 
@@ -54,6 +55,15 @@ export function setView(view: ViewName) {
   }
 
   target.classList.add('active')
+}
+
+export function setBlockingView(view: BlockingViewName) {
+  setTimeout(() => {
+    document.querySelector('div#view-loading')?.classList.add('loaded')
+  }, 400)
+  setTimeout(() => {
+    document.querySelector(`div#view-${view}`)?.classList.add('loaded')
+  }, 200)
 }
 
 export function closeOverlay(view: ViewName) {

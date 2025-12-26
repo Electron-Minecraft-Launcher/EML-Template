@@ -1,4 +1,4 @@
-import { ipcMain, app, session } from 'electron'
+import { ipcMain, app } from 'electron'
 import { MicrosoftAuth } from 'eml-lib'
 import type { Account } from 'eml-lib'
 import * as fs from 'node:fs'
@@ -14,9 +14,8 @@ export function registerAuthHandlers(mainWindow: Electron.BrowserWindow) {
   ipcMain.handle('auth:login', async () => {
     try {
       const account = await auth.auth()
-      console.log(sessionPath)
       fs.writeFileSync(sessionPath, JSON.stringify(account))
-      return { success: true, account }
+      return { success: true, account } as IAuthResponse
     } catch (err: any) {
       return { success: false, error: err.message ?? 'Unknown error' }
     }
@@ -24,27 +23,24 @@ export function registerAuthHandlers(mainWindow: Electron.BrowserWindow) {
 
   ipcMain.handle('auth:refresh', async () => {
     if (!fs.existsSync(sessionPath)) {
-      return { success: false }
+      return { success: false } as { success: false }
     }
 
     try {
-      console.log('Refreshing session from', sessionPath)
       const data = fs.readFileSync(sessionPath, 'utf-8')
       const savedSession = JSON.parse(data) as Account
 
       if (savedSession && savedSession.uuid) {
         const valid = await auth.validate(savedSession)
         if (valid) {
-          console.log('Session is still valid.')
-          return { success: true, account: savedSession }
+          return { success: true, account: savedSession } as IAuthResponse
         }
         const account = await auth.refresh(savedSession)
         fs.writeFileSync(sessionPath, JSON.stringify(account))
-        return { success: true, account }
+        return { success: true, account } as IAuthResponse
       }
       return { success: false }
     } catch (err: any) {
-      console.error('Error refreshing session:', err)
       return { success: false, error: err.message }
     }
   })

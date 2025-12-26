@@ -3,10 +3,10 @@ import { Background } from 'eml-lib'
 
 export function registerBackgroundHandlers() {
   ipcMain.handle('background:get', async () => {
-    const background = new Background('http://localhost:5173')
+    const background = new Background('http://localhost:8080')
 
     try {
-      const currentBackground = await getBackground()
+      const currentBackground = await background.getBackground()
       return currentBackground
     } catch (err) {
       console.error('Failed to fetch background:', err)
@@ -15,12 +15,3 @@ export function registerBackgroundHandlers() {
   })
 }
 
-async function getBackground() {
-  const res = await fetch(`http://localhost:5173/api/background`)
-    .then((res) => res.json() as Promise<{ background: any }>)
-    .catch((err) => {
-      throw err
-    })
-
-  return res ?? null
-}

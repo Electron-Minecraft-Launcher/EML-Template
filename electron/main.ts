@@ -8,6 +8,7 @@ import { registerServerHandlers } from './handlers/server'
 import { registerNewsHandlers } from './handlers/news'
 import { registerBackgroundHandlers } from './handlers/background'
 import { registerMaintenanceHandlers } from './handlers/maintenance'
+import { registerBootstrapHandlers } from './handlers/bootstraps'
 
 const APP_TITLE = 'EML Template'
 const BG_COLOR = '#121212'
@@ -118,6 +119,7 @@ app.whenReady().then(() => {
     registerNewsHandlers()
     registerBackgroundHandlers()
     registerMaintenanceHandlers()
+    registerBootstrapHandlers(mainWindow)
     registerLauncherHandlers(mainWindow)
     registerSettingsHandlers()
   }

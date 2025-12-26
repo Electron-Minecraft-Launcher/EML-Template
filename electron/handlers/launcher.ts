@@ -4,14 +4,13 @@ import type { Account } from 'eml-lib'
 import type { IGameSettings } from './settings'
 
 export function registerLauncherHandlers(mainWindow: BrowserWindow) {
-  console.log('Registred')
   ipcMain.handle('game:launch', (_event, payload: { account: Account; settings: IGameSettings }) => {
     const { account, settings } = payload
     const java = settings.java === 'system' ? { install: 'manual' as const, absolutePath: 'java' } : { install: 'auto' as const }
     console.log('Launching')
 
     const launcher = new Launcher({
-      url: 'http://localhost:5173',
+      url: 'http://localhost:8080',
       serverId: 'goldfrite',
       account: account,
       cleaning: {
@@ -30,20 +29,19 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_compute_download', () => {
-      console.log('\nComputing download...')
+      console.log('Computing download...')
       mainWindow.webContents.send('game:launch_compute_download')
     })
 
     launcher.on('launch_download', (download) => {
-      console.log(`\nDownloading ${download.total.amount} files (${download.total.size} B).`)
+      console.log(`Downloading ${download.total.amount} files (${download.total.size} B).`)
       mainWindow.webContents.send('game:launch_download', download)
     })
     launcher.on('download_progress', (progress) => {
-      console.log(progress.type, `=> Downloaded ${Math.round(progress.downloaded.size / 1024)} / ${Math.round(progress.total.size / 1024)} kB`)
       mainWindow.webContents.send('game:download_progress', progress)
     })
     launcher.on('download_error', (error) => {
-      console.error(error.type, `=> Error downloading ${error.filename}: ${error.message}`)
+      console.error(`Error downloading ${error.filename}: ${error.message}`)
       mainWindow.webContents.send('game:download_error', error)
     })
     launcher.on('download_end', (info) => {
@@ -52,12 +50,12 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_install_loader', (loader) => {
-      console.log(`\nInstalling loader ${loader.type} ${loader.loaderVersion}...`)
+      console.log(`Installing loader ${loader.type} ${loader.loaderVersion}...`)
       mainWindow.webContents.send('game:launch_install_loader', loader)
     })
 
     launcher.on('launch_extract_natives', () => {
-      console.log('\nExtracting natives...')
+      console.log('Extracting natives...')
       mainWindow.webContents.send('game:launch_extract_natives')
     })
     launcher.on('extract_progress', (progress) => {
@@ -70,11 +68,11 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_copy_assets', () => {
-      console.log('\nCopying assets...')
+      console.log('Copying assets...')
       mainWindow.webContents.send('game:launch_copy_assets')
     })
     launcher.on('copy_progress', (progress) => {
-      console.log(`Copyed ${progress.filename} to ${progress.dest}.`)
+      console.log(`Copied ${progress.filename} to ${progress.dest}.`)
       mainWindow.webContents.send('game:copy_progress', progress)
     })
     launcher.on('copy_end', (info) => {
@@ -83,11 +81,10 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_patch_loader', () => {
-      console.log('\nPatching loader...')
+      console.log('Patching loader...')
       mainWindow.webContents.send('game:launch_patch_loader')
     })
     launcher.on('patch_progress', (progress) => {
-      console.log(`Patched ${progress.filename}.`)
       mainWindow.webContents.send('game:patch_progress', progress)
     })
     launcher.on('patch_error', (error) => {
@@ -100,7 +97,7 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_check_java', () => {
-      console.log('\nChecking Java...')
+      console.log('Checking Java...')
       mainWindow.webContents.send('game:launch_check_java')
     })
     launcher.on('java_info', (info) => {
@@ -109,11 +106,10 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_clean', () => {
-      console.log('\nCleaning game directory...')
+      console.log('Cleaning game directory...')
       mainWindow.webContents.send('game:launch_clean')
     })
     launcher.on('clean_progress', (progress) => {
-      console.log(`Cleaned ${progress.filename}.`)
       mainWindow.webContents.send('game:clean_progress', progress)
     })
     launcher.on('clean_end', (info) => {
@@ -122,7 +118,7 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_launch', (info) => {
-      console.log(`\nLaunching Minecraft ${info.version} (${info.type}${info.loaderVersion ? ` ${info.loaderVersion}` : ''})...`)
+      console.log(`Launching Minecraft ${info.version} (${info.type}${info.loaderVersion ? ` ${info.loaderVersion}` : ''})...`)
       mainWindow.webContents.send('game:launch_launch', info)
       if (settings.launcherAction === 'close') {
         setTimeout(() => app.quit(), 5000)
@@ -141,11 +137,9 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_debug', (message) => {
-      console.log(`Debug: ${message}\n`)
       mainWindow.webContents.send('game:launch_debug', message)
     })
     launcher.on('patch_debug', (message) => {
-      console.log(`Debug: ${message}`)
       mainWindow.webContents.send('game:patch_debug', message)
     })
 
@@ -156,3 +150,4 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     }
   })
 }
+
