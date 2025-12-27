@@ -23,7 +23,7 @@ export function logout() {
 function updateUserInterface() {
   if (!currentAccount) return
 
-  console.log('Updating UI for user:', currentAccount)
+  console.log('Updating UI for user:', currentAccount.name)
 
   const nameEl = document.getElementById('user-name')
   const avatarEl = document.getElementById('user-avatar') as HTMLImageElement
