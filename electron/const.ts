@@ -1,0 +1,1 @@
+export const ADMINTOOL_URL = 'http://localhost:8080'

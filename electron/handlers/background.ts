@@ -1,9 +1,10 @@
 import { ipcMain } from 'electron'
 import { Background } from 'eml-lib'
+import { ADMINTOOL_URL } from '../const'
 
 export function registerBackgroundHandlers() {
   ipcMain.handle('background:get', async () => {
-    const background = new Background('http://localhost:8080')
+    const background = new Background(ADMINTOOL_URL)
 
     try {
       const currentBackground = await background.getBackground()
