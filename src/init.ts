@@ -1,6 +1,6 @@
 import { setBlockingView, setUser, setView } from './state'
 import { auth, background, bootstraps, maintenance } from './ipc'
-import _mockSession from './_mock-msa'
+// import _mockSession from './_mock-msa'
 
 const DEFAULT_BACKGROUND = '/src/static/images/bg.jpg'
 const dateFormatOptions: Intl.DateTimeFormatOptions = {
@@ -88,8 +88,8 @@ export async function bootstrap() {
   try {
     const [_, session] = await Promise.all([
       preloadImage(bgUrl),
-      // auth.refresh()
-      Promise.resolve(_mockSession)
+      auth.refresh()
+      // Promise.resolve(_mockSession)
     ])
 
     if (bgElement) bgElement.style.backgroundImage = `url('${bgUrl}')`

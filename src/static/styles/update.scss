@@ -17,12 +17,14 @@ div.maintenance-card {
 
   .text {
     opacity: 1;
+    color: var(--text-muted);
   }
 }
 
 .progress-container {
   margin-top: 20px;
   height: 40px;
+  min-width: 250px;
 
   &.hidden {
     display: none;

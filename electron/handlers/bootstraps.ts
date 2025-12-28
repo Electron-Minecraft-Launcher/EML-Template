@@ -22,7 +22,12 @@ export function registerBootstrapHandlers(mainWindow: Electron.BrowserWindow) {
   }
 
   ipcMain.handle('bootstraps:check', async () => {
-    return await bootstraps?.checkForUpdate()
+    try {
+      return await bootstraps?.checkForUpdate()
+    } catch (err) {
+      console.error('Error checking for bootstraps update', err)
+      return { updateAvailable: false }
+    }
   })
 
   ipcMain.handle('bootstraps:download', async () => {
