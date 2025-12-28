@@ -103,7 +103,7 @@
       ],
       "icon": "build/icon.png",
       "category": "Game",
-      "description": "EML Template Launcher with EML Lib",
+      "description": "Template launcher with EML Lib",
       "artifactName": "${productName}-${version}.${ext}"
     }
   },
