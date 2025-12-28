@@ -1,12 +1,13 @@
 import type Electron from 'electron'
 import { ipcMain } from 'electron'
 import { Bootstraps } from 'eml-lib'
+import { ADMINTOOL_URL } from '../const'
 
 let bootstraps: Bootstraps | null = null
 
 export function registerBootstrapHandlers(mainWindow: Electron.BrowserWindow) {
   if (!bootstraps) {
-    bootstraps = new Bootstraps('http://localhost:8080')
+    bootstraps = new Bootstraps(ADMINTOOL_URL)
 
     bootstraps.on('download_progress', (data) => {
       mainWindow.webContents.send('bootstraps:download_progress', data)

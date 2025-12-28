@@ -2,6 +2,7 @@ import { ipcMain, BrowserWindow, app } from 'electron'
 import { Launcher } from 'eml-lib'
 import type { Account } from 'eml-lib'
 import type { IGameSettings } from './settings'
+import { ADMINTOOL_URL } from '../const'
 
 export function registerLauncherHandlers(mainWindow: BrowserWindow) {
   ipcMain.handle('game:launch', (_event, payload: { account: Account; settings: IGameSettings }) => {
@@ -10,7 +11,7 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     console.log('Launching')
 
     const launcher = new Launcher({
-      url: 'http://localhost:8080',
+      url: ADMINTOOL_URL,
       serverId: 'goldfrite',
       account: account,
       cleaning: {
