@@ -108,7 +108,7 @@
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
-    "electron": "^39.6.1",
+    "electron": "^39.8.5",
     "electron-builder": "^26.8.1",
     "prettier": "^3.8.1",
     "sass-embedded": "^1.97.3",
