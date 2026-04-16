@@ -117,7 +117,7 @@
     "vite-plugin-electron": "^0.29.1"
   },
   "dependencies": {
-    "dompurify": "^3.3.3",
+    "dompurify": "^3.4.0",
     "electron-log": "^5.4.3",
     "electron-updater": "^6.8.3",
     "eml-lib": "^2.2.1",
