@@ -121,7 +121,7 @@
     "prettier": "^3.8.3",
     "sass-embedded": "^1.99.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.10",
+    "vite": "^8.0.16",
     "vite-plugin-electron": "^0.29.1"
   }
 }
