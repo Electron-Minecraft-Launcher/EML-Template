@@ -107,7 +107,7 @@
     }
   },
   "dependencies": {
-    "dompurify": "^3.4.2",
+    "dompurify": "^3.4.11",
     "electron-log": "^5.4.3",
     "electron-updater": "^6.8.3",
     "eml-lib": "^2.3.5",
