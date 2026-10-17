@@ -2,10 +2,10 @@ import type { IGameSettings, ISystemInfo } from '../electron/handlers/settings'
 import type { IAuthResponse } from '../electron/handlers/auth'
 import type {
   Account,
-  BootstrapsEvents,
+  BootstrapEvents,
   CleanerEvents,
   DownloaderEvents,
-  FilesManagerEvents,
+  FileManagerEvents,
   IBackground,
   IBootstraps,
   IMaintenance,
@@ -63,10 +63,10 @@ declare global {
         install: () => Promise<void>
         downloadProgress: (callback: (value: DownloaderEvents['download_progress'][0]) => void) => void
         downloadEnd: (callback: (value: DownloaderEvents['download_end'][0]) => void) => void
-        error: (callback: (value: BootstrapsEvents['bootstraps_error'][0]) => void) => void
+        error: (callback: (value: BootstrapEvents['bootstraps_error'][0]) => void) => void
       }
       game: {
-        launch: (payload: { account: Account; settings: IGameSettings, profileSlug: string }) => Promise<void>
+        launch: (payload: { account: Account; settings: IGameSettings, profileSlug?: string }) => Promise<void>
 
         launchComputeDownload: (callback: () => void) => void
 
@@ -78,11 +78,11 @@ declare global {
         launchInstallLoader: (callback: (value: LauncherEvents['launch_install_loader'][0]) => void) => void
 
         launchExtractNatives: (callback: () => void) => void
-        extractProgress: (callback: (value: FilesManagerEvents['extract_progress'][0]) => void) => void
-        extractEnd: (callback: (value: FilesManagerEvents['extract_end'][0]) => void) => void
+        extractProgress: (callback: (value: FileManagerEvents['extract_progress'][0]) => void) => void
+        extractEnd: (callback: (value: FileManagerEvents['extract_end'][0]) => void) => void
         launchCopyAssets: (callback: () => void) => void
-        copyProgress: (callback: (value: FilesManagerEvents['copy_progress'][0]) => void) => void
-        copyEnd: (callback: (value: FilesManagerEvents['copy_end'][0]) => void) => void
+        copyProgress: (callback: (value: FileManagerEvents['copy_progress'][0]) => void) => void
+        copyEnd: (callback: (value: FileManagerEvents['copy_end'][0]) => void) => void
 
         launchPatchLoader: (callback: () => void) => void
         patchProgress: (callback: (value: PatcherEvents['patch_progress'][0]) => void) => void
@@ -161,11 +161,11 @@ export const bootstraps = {
   install: async () => await window.api.bootstraps.install(),
   downloadProgress: (callback: (value: DownloaderEvents['download_progress'][0]) => void) => window.api.bootstraps.downloadProgress(callback),
   downloadEnd: (callback: (value: DownloaderEvents['download_end'][0]) => void) => window.api.bootstraps.downloadEnd(callback),
-  error: (callback: (value: BootstrapsEvents['bootstraps_error'][0]) => void) => window.api.bootstraps.error(callback)
+  error: (callback: (value: BootstrapEvents['bootstraps_error'][0]) => void) => window.api.bootstraps.error(callback)
 }
 
 export const game = {
-  launch: async (payload: { account: Account; settings: IGameSettings, profileSlug: string }) => await window.api.game.launch(payload),
+  launch: async (payload: { account: Account; settings: IGameSettings, profileSlug?: string }) => await window.api.game.launch(payload),
   launchComputeDownload: (callback: () => void) => window.api.game.launchComputeDownload(callback),
   launchDownload: (callback: (value: LauncherEvents['launch_download'][0]) => void) => window.api.game.launchDownload(callback),
   downloadProgress: (callback: (value: DownloaderEvents['download_progress'][0]) => void) => window.api.game.downloadProgress(callback),
@@ -173,11 +173,11 @@ export const game = {
   downloadEnd: (callback: (value: DownloaderEvents['download_end'][0]) => void) => window.api.game.downloadEnd(callback),
   launchInstallLoader: (callback: (value: LauncherEvents['launch_install_loader'][0]) => void) => window.api.game.launchInstallLoader(callback),
   launchExtractNatives: (callback: () => void) => window.api.game.launchExtractNatives(callback),
-  extractProgress: (callback: (value: FilesManagerEvents['extract_progress'][0]) => void) => window.api.game.extractProgress(callback),
-  extractEnd: (callback: (value: FilesManagerEvents['extract_end'][0]) => void) => window.api.game.extractEnd(callback),
+  extractProgress: (callback: (value: FileManagerEvents['extract_progress'][0]) => void) => window.api.game.extractProgress(callback),
+  extractEnd: (callback: (value: FileManagerEvents['extract_end'][0]) => void) => window.api.game.extractEnd(callback),
   launchCopyAssets: (callback: () => void) => window.api.game.launchCopyAssets(callback),
-  copyProgress: (callback: (value: FilesManagerEvents['copy_progress'][0]) => void) => window.api.game.copyProgress(callback),
-  copyEnd: (callback: (value: FilesManagerEvents['copy_end'][0]) => void) => window.api.game.copyEnd(callback),
+  copyProgress: (callback: (value: FileManagerEvents['copy_progress'][0]) => void) => window.api.game.copyProgress(callback),
+  copyEnd: (callback: (value: FileManagerEvents['copy_end'][0]) => void) => window.api.game.copyEnd(callback),
   launchPatchLoader: (callback: () => void) => window.api.game.launchPatchLoader(callback),
   patchProgress: (callback: (value: PatcherEvents['patch_progress'][0]) => void) => window.api.game.patchProgress(callback),
   patchError: (callback: (value: PatcherEvents['patch_error'][0]) => void) => window.api.game.patchError(callback),

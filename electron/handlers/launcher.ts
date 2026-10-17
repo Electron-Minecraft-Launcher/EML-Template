@@ -1,12 +1,12 @@
 import { ipcMain, BrowserWindow, app } from 'electron'
 import { Launcher } from 'eml-lib'
-import type { Account, IProfile } from 'eml-lib'
+import type { Account } from 'eml-lib'
 import type { IGameSettings } from './settings'
 import logger from 'electron-log/main'
 import { ADMINTOOL_URL } from '../const'
 
 export function registerLauncherHandlers(mainWindow: BrowserWindow) {
-  ipcMain.handle('game:launch', (_event, payload: { account: Account; settings: IGameSettings; profileSlug: string }) => {
+  ipcMain.handle('game:launch', (_event, payload: { account: Account; settings: IGameSettings; profileSlug?: string }) => {
     const { account, settings, profileSlug } = payload
     const java = settings.java === 'system' ? { install: 'manual' as const, absolutePath: 'java' } : { install: 'auto' as const }
     logger.log('Launching')
@@ -53,7 +53,7 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_install_loader', (loader) => {
-      logger.log(`Installing loader ${loader.type} ${loader.loaderVersion}...`)
+      logger.log(`Installing loader ${loader.loader} ${loader.version}...`)
       mainWindow.webContents.send('game:launch_install_loader', loader)
     })
 
@@ -121,7 +121,9 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_launch', (info) => {
-      logger.log(`Launching Minecraft ${info.version} (${info.type}${info.loaderVersion ? ` ${info.loaderVersion}` : ''})...`)
+      logger.log(
+        `Launching Minecraft ${info.minecraft.version} (${info.minecraft.loader?.loader ?? 'vanilla'}${info.minecraft.loader?.version ? ` ${info.minecraft.loader.version}` : ''})...`
+      )
       mainWindow.webContents.send('game:launch_launch', info)
       if (settings.launcherAction === 'close') {
         setTimeout(() => app.quit(), 5000)

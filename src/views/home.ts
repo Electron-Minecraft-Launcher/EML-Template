@@ -3,6 +3,7 @@ import { game, news, server, settings, profiles } from '../ipc'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import logger from 'electron-log/renderer'
+import type { IProfile } from 'eml-lib'
 
 marked.use({
   renderer: {
@@ -47,8 +48,8 @@ export function initHome() {
   const profileDropdown = document.getElementById('profile-dropdown')
   const currentProfileName = document.getElementById('current-profile-name')
 
-  let selectedProfile: any = null
-  let allProfiles: any[] = []
+  let selectedProfile: IProfile | null = null
+  let allProfiles: IProfile[] = []
   let totalToDownload = 0
   let totalDownloadedByType: { type: string; size: number }[] = []
 
@@ -66,6 +67,7 @@ export function initHome() {
       .map(
         (p) => `
       <div class="profile-option ${selectedProfile?.id === p.id ? 'active' : ''}" data-id="${p.id}">
+        ${p.visibility === 'PROTECTED' ? '<i class="fa-fw fa-solid fa-lock"></i>&nbsp;&nbsp;' : ''}
         ${p.name}
       </div>
     `
@@ -76,7 +78,8 @@ export function initHome() {
       opt.addEventListener('click', (e) => {
         const id = (e.target as HTMLElement).dataset.id
         const profile = allProfiles.find((p) => p.id === id)
-        if (profile) selectProfile(profile)
+        if (profile?.visibility && !('createdAt' in profile)) unlockProfile(profile)
+        else if (profile) selectProfile(profile)
         profileSelector?.classList.remove('open')
       })
     })
@@ -89,6 +92,28 @@ export function initHome() {
     updateServerStatus()
   }
 
+  const unlockProfile = (profile: any) => {
+    const profileView = document.getElementById('view-profile')
+    if (!profileView) return
+
+    const profileName = document.getElementById('profile-name')
+    if (profileName) profileName.innerText = profile.name
+
+    const profileSlugInput = document.getElementById('profile-slug') as HTMLInputElement
+    if (profileSlugInput) profileSlugInput.value = profile.slug
+
+    const passwordInput = document.getElementById('profile-password') as HTMLInputElement
+    if (passwordInput) {
+      passwordInput.value = ''
+    }
+
+    setView('profile')
+  }
+
+  settingsBtn?.addEventListener('click', () => {
+    setView('settings')
+  })
+
   const updateServerStatus = async () => {
     if (statusDot) {
       statusDot.classList.remove('online', 'offline')
@@ -97,7 +122,7 @@ export function initHome() {
     if (statusText) statusText.innerHTML = 'Pinging...'
     if (playerCount) playerCount.innerHTML = ''
 
-    const status = selectedProfile ? await server.getStatus(selectedProfile.ip, selectedProfile.port || 25565) : null
+    const status = selectedProfile?.ip ? await server.getStatus(selectedProfile.ip, selectedProfile.port || 25565) : null
 
     if (status) {
       if (statusDot) {
@@ -178,10 +203,6 @@ export function initHome() {
       progressPercent.style.display = 'block'
     }
   }
-
-  settingsBtn?.addEventListener('click', () => {
-    setView('settings')
-  })
 
   playBtn?.addEventListener('click', async () => {
     setIndeterminate(true)
@@ -272,8 +293,4 @@ Ready to launch the game with the following settings:
     }, 10000)
   })
 }
-
-
-
-
 

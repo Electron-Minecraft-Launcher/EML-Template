@@ -352,6 +352,26 @@
           </main>
         </div>
       </div>
+
+      <div id="view-profile" class="view overlay" data-view="profile">
+        <div class="profile-modal">
+          <button id="btn-close-profile" class="btn btn-icon-only btn-close-absolute">
+            <i class="fa-fw fa-solid fa-xmark"></i>
+          </button>
+
+          <div class="profile-content">
+            <h2 id="profile-name"></h2>
+            <p class="subtitle">Unlock this profile</p>
+
+            <input type="hidden" id="profile-slug" />
+
+            <label for="profile-password">Password:</label>
+            <input type="password" id="profile-password" placeholder="abc123" />
+
+            <button id="btn-unlock-profile-submit" class="btn btn-secondary unlock-profile-btn-submit">Unlock</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="custom-dialog" class="dialog-overlay hidden">
