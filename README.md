@@ -25,7 +25,7 @@ Powered by <a href="https://github.com/Electron-Minecraft-Launcher/EML-Lib-v2"><
 
 ## Introduction
 
-**EML Template** acts as the frontend foundation for the _Electron Minecraft Launcher_ ecosystem. It is a pre-configured **Electron + Vite** application designed to provide the best possible gaming experience.
+**EML Template** acts as the frontend foundation for the _Electron Minecraft Launcher_ ecosystem. It is a pre-configured **Electron + Svelte** application designed to provide the best possible gaming experience.
 
 It is engineered to work in perfect synergy with **EML Lib** (for the core logic) and **EML AdminTool** (for configuration).
 
