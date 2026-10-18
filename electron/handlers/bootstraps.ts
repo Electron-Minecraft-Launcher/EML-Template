@@ -1,14 +1,14 @@
 import type Electron from 'electron'
 import { ipcMain } from 'electron'
-import { Bootstraps } from 'eml-lib'
+import { Bootstrap } from 'eml-lib'
 import logger from 'electron-log/main'
 import { ADMINTOOL_URL } from '../const'
 
-let bootstraps: Bootstraps | null = null
+let bootstraps: Bootstrap | null = null
 
-export function registerBootstrapHandlers(mainWindow: Electron.BrowserWindow) {
+export function registerBootstrapHandlers(mainWindow: Electron.BrowserWindow): Bootstrap {
   if (!bootstraps) {
-    bootstraps = new Bootstraps(ADMINTOOL_URL)
+    bootstraps = new Bootstrap(ADMINTOOL_URL)
 
     bootstraps.on('download_progress', (data) => {
       mainWindow.webContents.send('bootstraps:download_progress', data)
@@ -39,6 +39,8 @@ export function registerBootstrapHandlers(mainWindow: Electron.BrowserWindow) {
   ipcMain.handle('bootstraps:install', async () => {
     return await bootstraps?.runUpdate()
   })
+
+  return bootstraps
 }
 
 

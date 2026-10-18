@@ -3,16 +3,17 @@ import type { IGameSettings, ISystemInfo } from './handlers/settings'
 import type { IAuthResponse } from './handlers/auth'
 import type {
   Account,
-  BootstrapsEvents,
+  BootstrapEvents,
   CleanerEvents,
   DownloaderEvents,
-  FilesManagerEvents,
+  FileManagerEvents,
   IAvatar,
   IBackground,
   IBootstraps,
   ICape,
   IMaintenance,
   INews,
+  IProfile,
   IServerStatus,
   ISkin,
   JavaEvents,
@@ -22,6 +23,12 @@ import type {
 
 console.log('Preload script loaded')
 
+function subscribe(channel: string, callback: (...args: any[]) => void): () => void {
+  const listener = (_event: unknown, ...args: any[]) => callback(...args)
+  ipcRenderer.on(channel, listener)
+  return () => ipcRenderer.removeListener(channel, listener)
+}
+
 contextBridge.exposeInMainWorld('api', {
   auth: {
     login: (): Promise<IAuthResponse> => ipcRenderer.invoke('auth:login'),
@@ -29,41 +36,43 @@ contextBridge.exposeInMainWorld('api', {
     logout: (): Promise<{ success: boolean }> => ipcRenderer.invoke('auth:logout')
   },
   profiles: {
-    get: (): Promise<any[]> => ipcRenderer.invoke('profiles:get')
+    get: (account: Account): Promise<IProfile[]> => ipcRenderer.invoke('profiles:get', account),
+    auth: (slug: string, password: string): Promise<{ success: true; token: string; slug: string } | { success: false; error: string }> =>
+      ipcRenderer.invoke('profiles:auth', slug, password)
   },
   game: {
-    launch: (payload: { account: Account; settings: IGameSettings; profileSlug: string }) => {
-      ipcRenderer.invoke('game:launch', payload)
+    launch: (payload: { account: Account; settings: IGameSettings; profileSlug?: string, token?: string }) => {
+      return ipcRenderer.invoke('game:launch', payload)
     },
 
-    launchComputeDownload: (callback: () => void) => ipcRenderer.on('game:launch_compute_download', (_event) => callback()),
+    launchComputeDownload: (callback: () => void) => subscribe('game:launch_compute_download', callback),
 
     launchDownload: (callback: (value: LauncherEvents['launch_download'][0]) => void) =>
-      ipcRenderer.on('game:launch_download', (_event, value) => callback(value)),
+      subscribe('game:launch_download', callback),
     downloadProgress: (callback: (value: DownloaderEvents['download_progress'][0]) => void) =>
-      ipcRenderer.on('game:download_progress', (_event, value) => callback(value)),
+      subscribe('game:download_progress', callback),
     downloadError: (callback: (value: DownloaderEvents['download_error'][0]) => void) =>
-      ipcRenderer.on('game:download_error', (_event, value) => callback(value)),
+      subscribe('game:download_error', callback),
     downloadEnd: (callback: (value: DownloaderEvents['download_end'][0]) => void) =>
       ipcRenderer.on('game:download_end', (_event, value) => callback(value)),
 
     launchInstallLoader: (callback: (value: LauncherEvents['launch_install_loader'][0]) => void) =>
-      ipcRenderer.on('game:launch_install_loader', (_event, value) => callback(value)),
+      subscribe('game:launch_install_loader', callback),
 
-    launchExtractNatives: (callback: () => void) => ipcRenderer.on('game:launch_extract_natives', (_event) => callback()),
-    extractProgress: (callback: (value: FilesManagerEvents['extract_progress'][0]) => void) =>
+    launchExtractNatives: (callback: () => void) => subscribe('game:launch_extract_natives', callback),
+    extractProgress: (callback: (value: FileManagerEvents['extract_progress'][0]) => void) =>
       ipcRenderer.on('game:extract_progress', (_event, value) => callback(value)),
-    extractEnd: (callback: (value: FilesManagerEvents['extract_end'][0]) => void) =>
+    extractEnd: (callback: (value: FileManagerEvents['extract_end'][0]) => void) =>
       ipcRenderer.on('game:extract_end', (_event, value) => callback(value)),
-    launchCopyAssets: (callback: () => void) => ipcRenderer.on('game:launch_copy_assets', (_event) => callback()),
-    copyProgress: (callback: (value: FilesManagerEvents['copy_progress'][0]) => void) =>
+    launchCopyAssets: (callback: () => void) => subscribe('game:launch_copy_assets', callback),
+    copyProgress: (callback: (value: FileManagerEvents['copy_progress'][0]) => void) =>
       ipcRenderer.on('game:copy_progress', (_event, value) => callback(value)),
-    copyEnd: (callback: (value: FilesManagerEvents['copy_end'][0]) => void) => ipcRenderer.on('game:copy_end', (_event, value) => callback(value)),
-    launchPatchLoader: (callback: () => void) => ipcRenderer.on('game:launch_patch_loader', (_event) => callback()),
+    copyEnd: (callback: (value: FileManagerEvents['copy_end'][0]) => void) => ipcRenderer.on('game:copy_end', (_event, value) => callback(value)),
+    launchPatchLoader: (callback: () => void) => subscribe('game:launch_patch_loader', callback),
     patchProgress: (callback: (value: PatcherEvents['patch_progress'][0]) => void) =>
       ipcRenderer.on('game:patch_progress', (_event, value) => callback(value)),
     patchError: (callback: (value: PatcherEvents['patch_error'][0]) => void) =>
-      ipcRenderer.on('game:patch_error', (_event, value) => callback(value)),
+      subscribe('game:patch_error', callback),
     patchEnd: (callback: (value: PatcherEvents['patch_end'][0]) => void) => ipcRenderer.on('game:patch_end', (_event, value) => callback(value)),
     launchCheckJava: (callback: () => void) => ipcRenderer.on('game:launch_check_java', (_event) => callback()),
     javaInfo: (callback: (value: JavaEvents['java_info'][0]) => void) => ipcRenderer.on('game:java_info', (_event, value) => callback(value)),
@@ -73,8 +82,8 @@ contextBridge.exposeInMainWorld('api', {
       ipcRenderer.on('game:clean_progress', (_event, value) => callback(value)),
     cleanEnd: (callback: (value: CleanerEvents['clean_end'][0]) => void) => ipcRenderer.on('game:clean_end', (_event, value) => callback(value)),
     launchLaunch: (callback: (value: LauncherEvents['launch_launch'][0]) => void) =>
-      ipcRenderer.on('game:launch_launch', (_event, value) => callback(value)),
-    launched: (callback: () => void) => ipcRenderer.on('game:launched', (_event) => callback()),
+      subscribe('game:launch_launch', callback),
+    launched: (callback: () => void) => subscribe('game:launched', callback),
 
     launchData: (callback: (value: LauncherEvents['launch_data'][0]) => void) =>
       ipcRenderer.on('game:launch_data', (_event, value) => callback(value)),
@@ -82,6 +91,12 @@ contextBridge.exposeInMainWorld('api', {
     launchDebug: (callback: (value: LauncherEvents['launch_debug'][0]) => void) =>
       ipcRenderer.on('game:launch_debug', (_event, value) => callback(value)),
     patchDebug: (callback: (value: PatcherEvents['patch_debug'][0]) => void) => ipcRenderer.on('game:patch_debug', (_event, value) => callback(value))
+  },
+  crashReports: {
+    onDetected: (callback: (value: { id: string; exitCode: number; date: string; profile: string; minecraftVersion: string }) => void) =>
+      subscribe('crashreports:detected', callback),
+    send: (id: string): Promise<{ success: boolean; error?: string }> => ipcRenderer.invoke('crashreports:send', id),
+    dismiss: (id: string): Promise<void> => ipcRenderer.invoke('crashreports:dismiss', id)
   },
   skin: {
     reload: (account: Account): Promise<void | null> => ipcRenderer.invoke('skin:reload', account),
@@ -116,7 +131,7 @@ contextBridge.exposeInMainWorld('api', {
       ipcRenderer.on('bootstraps:download_progress', (_event, value) => callback(value)),
     downloadEnd: (callback: (value: DownloaderEvents['download_end'][0]) => void) =>
       ipcRenderer.on('bootstraps:download_end', (_event, value) => callback(value)),
-    error: (callback: (value: BootstrapsEvents['bootstraps_error'][0]) => void) =>
+    error: (callback: (value: BootstrapEvents['bootstraps_error'][0]) => void) =>
       ipcRenderer.on('bootstraps:error', (_event, value) => callback(value))
   },
   settings: {
@@ -128,4 +143,3 @@ contextBridge.exposeInMainWorld('api', {
     getInfo: (): Promise<ISystemInfo> => ipcRenderer.invoke('system:info')
   }
 })
-

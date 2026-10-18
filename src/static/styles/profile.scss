@@ -1,0 +1,97 @@
+#view-profile {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 999;
+}
+
+.profile-modal {
+  position: relative;
+  width: 400px;
+  background: rgba(30, 30, 30);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.btn-close-absolute {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+  /* Visual style handled by .btn-icon-only in main.scss */
+}
+
+/* --- CONTENT AREA --- */
+.profile-content {
+  padding: 30px;
+  overflow-y: auto;
+
+  h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: white;
+  }
+
+  p.subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+
+  label {
+    display: block;
+    font-weight: 400;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    color: #ddd;
+    font-size: 14px;
+  }
+
+  input[type="password"] {
+    width: 100%;
+    background: #111;
+    border: 1px solid #444;
+    color: white;
+    padding: 10px;
+    border-radius: var(--btn-radius);
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.2s;
+
+    &:focus {
+      border-color: var(--primary);
+    }
+  }
+
+  p.error-message {
+    color: #ff8587;
+    font-size: 13px;
+    margin-top: 5px;
+  }
+
+  .unlock-profile-btn-submit {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+

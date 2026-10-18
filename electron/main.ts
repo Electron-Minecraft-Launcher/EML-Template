@@ -11,6 +11,8 @@ import { registerBootstrapHandlers } from './handlers/bootstraps'
 import logger from 'electron-log/main'
 import { registerProfilesHandlers } from './handlers/profiles'
 import { registerSkinHandlers } from './handlers/skin'
+import { registerStatsHandlers } from './handlers/stats'
+import { registerCrashReportHandlers } from './handlers/crashreports'
 
 const APP_TITLE = 'EML Template'
 const BG_COLOR = '#121212'
@@ -114,19 +116,23 @@ function configureAppMenu() {
 
 app.whenReady().then(() => {
   logger.initialize()
+  const stats = registerStatsHandlers()
   configureAppMenu()
   createWindow()
 
   if (mainWindow) {
-    registerAuthHandlers(mainWindow)
+    const auth = registerAuthHandlers(mainWindow)
+    stats.attach(auth)
     registerProfilesHandlers()
     registerServerHandlers()
     registerSkinHandlers()
     registerNewsHandlers()
     registerBackgroundHandlers()
     registerMaintenanceHandlers()
-    registerBootstrapHandlers(mainWindow)
-    registerLauncherHandlers(mainWindow)
+    const bootstrap = registerBootstrapHandlers(mainWindow)
+    stats.attach(bootstrap)
+    const crashReports = registerCrashReportHandlers(mainWindow)
+    registerLauncherHandlers(mainWindow, { stats, crashReports })
     registerSettingsHandlers()
   }
 })

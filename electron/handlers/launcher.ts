@@ -1,12 +1,14 @@
 import { ipcMain, BrowserWindow, app } from 'electron'
 import { Launcher } from 'eml-lib'
-import type { Account, IProfile } from 'eml-lib'
+import type { Account } from 'eml-lib'
 import type { IGameSettings } from './settings'
 import logger from 'electron-log/main'
 import { ADMINTOOL_URL } from '../const'
+import type { StatsIntegration } from './stats'
+import type { CrashReportIntegration } from './crashreports'
 
-export function registerLauncherHandlers(mainWindow: BrowserWindow) {
-  ipcMain.handle('game:launch', (_event, payload: { account: Account; settings: IGameSettings; profileSlug: string }) => {
+export function registerLauncherHandlers(mainWindow: BrowserWindow, integrations: { stats: StatsIntegration; crashReports: CrashReportIntegration }) {
+  ipcMain.handle('game:launch', (_event, payload: { account: Account; settings: IGameSettings; profileSlug?: string; token?: string }) => {
     const { account, settings, profileSlug } = payload
     const java = settings.java === 'system' ? { install: 'manual' as const, absolutePath: 'java' } : { install: 'auto' as const }
     logger.log('Launching')
@@ -14,7 +16,7 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     const launcher = new Launcher({
       url: ADMINTOOL_URL,
       root: 'goldfrite',
-      profile: { slug: profileSlug },
+      profile: { slug: profileSlug, token: payload.token },
       account: account,
       cleaning: {
         enabled: false
@@ -30,6 +32,9 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
         fullscreen: settings.resolution.fullscreen
       }
     })
+    integrations.stats.attach(launcher)
+    integrations.crashReports.attachLauncher(launcher)
+    let gameCrashed = false
 
     launcher.on('launch_compute_download', () => {
       logger.log('Computing download...')
@@ -53,7 +58,7 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_install_loader', (loader) => {
-      logger.log(`Installing loader ${loader.type} ${loader.loaderVersion}...`)
+      logger.log(`Installing loader ${loader.loader} ${loader.version}...`)
       mainWindow.webContents.send('game:launch_install_loader', loader)
     })
 
@@ -121,12 +126,16 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     launcher.on('launch_launch', (info) => {
-      logger.log(`Launching Minecraft ${info.version} (${info.type}${info.loaderVersion ? ` ${info.loaderVersion}` : ''})...`)
+      logger.log(
+        `Launching Minecraft ${info.minecraft.version} (${info.minecraft.loader?.loader ?? 'vanilla'}${info.minecraft.loader?.version ? ` ${info.minecraft.loader.version}` : ''})...`
+      )
       mainWindow.webContents.send('game:launch_launch', info)
       if (settings.launcherAction === 'close') {
         setTimeout(() => app.quit(), 5000)
       } else if (settings.launcherAction === 'hide') {
-        setTimeout(() => mainWindow.minimize(), 5000)
+        setTimeout(() => {
+          if (!gameCrashed && !mainWindow.isDestroyed()) mainWindow.minimize()
+        }, 5000)
       }
       mainWindow.webContents.send('game:launched')
     })
@@ -139,6 +148,10 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
       mainWindow.webContents.send('game:launch_close', code)
     })
 
+    launcher.on('launch_crash', () => {
+      gameCrashed = true
+    })
+
     launcher.on('launch_debug', (message) => {
       mainWindow.webContents.send('game:launch_debug', message)
     })
@@ -147,10 +160,9 @@ export function registerLauncherHandlers(mainWindow: BrowserWindow) {
     })
 
     try {
-      launcher.launch()
+      void launcher.launch().catch((err) => logger.error('Launcher error:', err))
     } catch (err) {
       logger.error('Launcher error:', err)
     }
   })
 }
-

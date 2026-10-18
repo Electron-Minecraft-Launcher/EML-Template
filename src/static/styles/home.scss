@@ -159,6 +159,8 @@
   user-select: none;
 
   .selected-profile {
+    width: 100%;
+    color: white;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 10px 15px;
@@ -204,6 +206,13 @@
     overflow-y: auto;
 
     .profile-option {
+      display: block;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      font-family: inherit;
       padding: 10px 15px;
       cursor: pointer;
       font-size: 13px;
@@ -316,10 +325,6 @@
   margin-top: 20px;
   height: 40px;
 
-  &.hidden {
-    display: none;
-  }
-
   .progress-info {
     display: flex;
     justify-content: space-between;
@@ -421,6 +426,11 @@
   padding-bottom: 40px;
   overflow-y: auto;
 
+  .news-empty {
+    text-align: center;
+    color: #888;
+  }
+
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -498,23 +508,6 @@
       letter-spacing: 0.5px;
     }
 
-    .tag.update {
-      background: rgba(33, 150, 243, 0.15);
-      color: #64b5f6;
-      border: 1px solid rgba(33, 150, 243, 0.3);
-    }
-
-    .tag.event {
-      background: rgba(255, 152, 0, 0.15);
-      color: #ffb74d;
-      border: 1px solid rgba(255, 152, 0, 0.3);
-    }
-
-    .tag.info {
-      background: rgba(158, 158, 158, 0.15);
-      color: #e0e0e0;
-      border: 1px solid rgba(158, 158, 158, 0.3);
-    }
   }
 
   img {
@@ -532,48 +525,5 @@
     line-height: 1.7;
     color: #f0f0f0;
 
-    &>*:first-child {
-      margin-top: 0;
-    }
-
-    &>*:last-child {
-      margin-bottom: 0;
-    }
-
-    p {
-      margin: 10px 0;
-    }
-
-    h1 {
-      font-size: 24px;
-      margin: 16px 0;
-      padding-bottom: 8px;
-    }
-
-    h2 {
-      font-size: 20px;
-      margin: 16px 0;
-      padding-bottom: 7px;
-    }
-
-    h3 {
-      font-size: 18px;
-      margin: 16px 0;
-      padding-bottom: 6px;
-    }
-
-    h4 {
-      font-size: 16px;
-      margin: 12px 0;
-      padding-bottom: 0;
-    }
-
-    ul {
-      margin: 10px 0 10px 20px;
-    }
-
-    a {
-      text-decoration: underline;
-    }
   }
 }

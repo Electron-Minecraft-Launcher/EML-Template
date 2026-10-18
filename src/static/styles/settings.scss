@@ -2,14 +2,6 @@
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
   z-index: 999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-
-  &.active {
-    opacity: 1;
-    pointer-events: all;
-  }
 }
 
 .settings-modal {
@@ -107,12 +99,7 @@
 }
 
 .tab-content {
-  display: none;
   animation: fadeInSettings 0.3s ease;
-
-  &.active {
-    display: block;
-  }
 }
 
 @keyframes fadeInSettings {
@@ -143,6 +130,13 @@
       width: 16px;
       text-align: center;
     }
+  }
+
+  .setting-group-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #ddd;
   }
 
   select,
@@ -243,6 +237,7 @@ input[type="range"] {
     padding-top: 10px;
     transition: background-color 0.2s;
     position: relative;
+    color: inherit;
 
     img {
       width: 159.3px;
@@ -294,6 +289,8 @@ input[type="range"] {
     padding-top: 5px;
     align-items: center;
     justify-content: center;
+    background: transparent;
+    color: inherit;
 
     img {
       width: 80px;
@@ -305,6 +302,11 @@ input[type="range"] {
       font-size: 12px;
       color: #aaa;
       font-weight: 500;
+    }
+
+    .fa-ban {
+      font-size: 48px;
+      color: #4b4b4b;
     }
 
     &:hover {
