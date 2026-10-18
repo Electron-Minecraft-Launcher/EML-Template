@@ -4,7 +4,7 @@
   "author": "GoldFrite",
   "description": "Template launcher with EML Lib",
   "private": true,
-  "version": "1.2.0",
+  "version": "2.0.0",
   "license": "MIT",
   "main": "dist-electron/main.js",
   "scripts": {
@@ -107,20 +107,22 @@
     }
   },
   "dependencies": {
-    "dompurify": "^3.4.14",
+    "dompurify": "^3.4.17",
     "electron-log": "^5.4.4",
     "electron-updater": "^6.8.9",
-    "eml-lib": "^2.7.2",
-    "marked": "^18.0.11",
-    "skinview3d": "^3.4.2"
+    "eml-lib": "^2.7.3",
+    "marked": "^18.1.1",
+    "skinview3d": "^3.4.2",
+    "svelte": "^5.57.2"
   },
   "devDependencies": {
-    "electron": "^44.0.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "electron": "^44.9.0",
     "electron-builder": "^26.15.3",
-    "prettier": "^3.9.6",
-    "sass-embedded": "^1.103.1",
+    "prettier": "^3.9.10",
+    "sass-embedded": "^1.105.2",
     "typescript": "^6.0.3",
-    "vite": "^8.2.2",
-    "vite-plugin-electron": "^1.1.1"
+    "vite": "^8.3.4",
+    "vite-plugin-electron": "^1.1.2"
   }
 }

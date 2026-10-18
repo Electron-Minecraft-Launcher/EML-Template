@@ -42,7 +42,8 @@ declare global {
         hideCape: () => Promise<ICape[] | null>
       }
       profiles: {
-        get: () => Promise<IProfile[]>
+        get: (account: Account) => Promise<IProfile[]>,
+        auth: (slug: string, password: string) => Promise<{ success: true; token: string; slug: string } | { success: false; error: string }>
       }
       server: {
         getStatus: (ip: string, port?: number) => Promise<IServerStatus | null>
@@ -66,27 +67,27 @@ declare global {
         error: (callback: (value: BootstrapEvents['bootstraps_error'][0]) => void) => void
       }
       game: {
-        launch: (payload: { account: Account; settings: IGameSettings, profileSlug?: string }) => Promise<void>
+        launch: (payload: { account: Account; settings: IGameSettings, profileSlug?: string, token?: string }) => Promise<void>
 
-        launchComputeDownload: (callback: () => void) => void
+        launchComputeDownload: (callback: () => void) => () => void
 
-        launchDownload: (callback: (value: LauncherEvents['launch_download'][0]) => void) => void
-        downloadProgress: (callback: (value: DownloaderEvents['download_progress'][0]) => void) => void
-        downloadError: (callback: (value: DownloaderEvents['download_error'][0]) => void) => void
+        launchDownload: (callback: (value: LauncherEvents['launch_download'][0]) => void) => () => void
+        downloadProgress: (callback: (value: DownloaderEvents['download_progress'][0]) => void) => () => void
+        downloadError: (callback: (value: DownloaderEvents['download_error'][0]) => void) => () => void
         downloadEnd: (callback: (value: DownloaderEvents['download_end'][0]) => void) => void
 
-        launchInstallLoader: (callback: (value: LauncherEvents['launch_install_loader'][0]) => void) => void
+        launchInstallLoader: (callback: (value: LauncherEvents['launch_install_loader'][0]) => void) => () => void
 
-        launchExtractNatives: (callback: () => void) => void
+        launchExtractNatives: (callback: () => void) => () => void
         extractProgress: (callback: (value: FileManagerEvents['extract_progress'][0]) => void) => void
         extractEnd: (callback: (value: FileManagerEvents['extract_end'][0]) => void) => void
-        launchCopyAssets: (callback: () => void) => void
+        launchCopyAssets: (callback: () => void) => () => void
         copyProgress: (callback: (value: FileManagerEvents['copy_progress'][0]) => void) => void
         copyEnd: (callback: (value: FileManagerEvents['copy_end'][0]) => void) => void
 
-        launchPatchLoader: (callback: () => void) => void
+        launchPatchLoader: (callback: () => void) => () => void
         patchProgress: (callback: (value: PatcherEvents['patch_progress'][0]) => void) => void
-        patchError: (callback: (value: PatcherEvents['patch_error'][0]) => void) => void
+        patchError: (callback: (value: PatcherEvents['patch_error'][0]) => void) => () => void
         patchEnd: (callback: (value: PatcherEvents['patch_end'][0]) => void) => void
 
         launchCheckJava: (callback: () => void) => void
@@ -95,13 +96,18 @@ declare global {
         launchClean: (callback: () => void) => void
         cleanProgress: (callback: (value: CleanerEvents['clean_progress'][0]) => void) => void
         cleanEnd: (callback: (value: CleanerEvents['clean_end'][0]) => void) => void
-        launchLaunch: (callback: (value: LauncherEvents['launch_launch'][0]) => void) => void
-        launched: (callback: () => void) => void
+        launchLaunch: (callback: (value: LauncherEvents['launch_launch'][0]) => void) => () => void
+        launched: (callback: () => void) => () => void
 
         launchData: (callback: (value: LauncherEvents['launch_data'][0]) => void) => void
         launchClose: (callback: (value: any) => void) => void
         launchDebug: (callback: (value: LauncherEvents['launch_debug'][0]) => void) => void
         patchDebug: (callback: (value: PatcherEvents['patch_debug'][0]) => void) => void
+      }
+      crashReports: {
+        onDetected: (callback: (value: { id: string; exitCode: number; date: string; profile: string; minecraftVersion: string }) => void) => () => void
+        send: (id: string) => Promise<{ success: boolean; error?: string }>
+        dismiss: (id: string) => Promise<void>
       }
       settings: {
         get: () => Promise<IGameSettings>
@@ -135,7 +141,8 @@ export const skin = {
 }
 
 export const profiles = {
-  get: async () => await window.api.profiles.get()
+  get: async (account: Account) => await window.api.profiles.get(account),
+  auth: async (slug: string, password: string) => await window.api.profiles.auth(slug, password)
 }
 
 export const server = {
@@ -165,7 +172,7 @@ export const bootstraps = {
 }
 
 export const game = {
-  launch: async (payload: { account: Account; settings: IGameSettings, profileSlug?: string }) => await window.api.game.launch(payload),
+  launch: async (payload: { account: Account; settings: IGameSettings, profileSlug?: string, token?: string }) => await window.api.game.launch(payload),
   launchComputeDownload: (callback: () => void) => window.api.game.launchComputeDownload(callback),
   launchDownload: (callback: (value: LauncherEvents['launch_download'][0]) => void) => window.api.game.launchDownload(callback),
   downloadProgress: (callback: (value: DownloaderEvents['download_progress'][0]) => void) => window.api.game.downloadProgress(callback),
@@ -193,6 +200,13 @@ export const game = {
   launchClose: (callback: (value: any) => void) => window.api.game.launchClose(callback),
   launchDebug: (callback: (value: LauncherEvents['launch_debug'][0]) => void) => window.api.game.launchDebug(callback),
   patchDebug: (callback: (value: PatcherEvents['patch_debug'][0]) => void) => window.api.game.patchDebug(callback)
+}
+
+export const crashReports = {
+  onDetected: (callback: (value: { id: string; exitCode: number; date: string; profile: string; minecraftVersion: string }) => void) =>
+    window.api.crashReports.onDetected(callback),
+  send: (id: string) => window.api.crashReports.send(id),
+  dismiss: (id: string) => window.api.crashReports.dismiss(id)
 }
 
 export const settings = {

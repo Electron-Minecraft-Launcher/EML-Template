@@ -26,10 +26,6 @@ div.maintenance-card {
   height: 40px;
   min-width: 250px;
 
-  &.hidden {
-    display: none;
-  }
-
   .progress-info {
     display: flex;
     justify-content: space-between;

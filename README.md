@@ -20,6 +20,9 @@ Powered by <a href="https://github.com/Electron-Minecraft-Launcher/EML-Lib-v2"><
 
 ---
 
+> [!WARNING]
+> This project is **partially vibe-coded** and does not aim to be a fully functional launcher out of the box. It is only a **template** for developers to build their own launchers. You will need to configure it, modify the code to your needs, and possibly integrate it with your own EML AdminTool instance.
+
 ## Introduction
 
 **EML Template** acts as the frontend foundation for the _Electron Minecraft Launcher_ ecosystem. It is a pre-configured **Electron + Vite** application designed to provide the best possible gaming experience.

@@ -5,14 +5,15 @@ import { ADMINTOOL_URL } from '../const'
 
 export function registerProfilesHandlers() {
   ipcMain.handle('profiles:get', async (_event, account: Account) => {
+    if (!account?.uuid) return []
     try {
       const profiles = new Profiles(ADMINTOOL_URL)
       const list = await profiles.getProfiles(account)
-      const sorted = [list.find((p) => p.isDefault)!, ...list.filter((p) => !p.isDefault)]
+      const sorted = [...list].sort((a, b) => Number(b.isDefault) - Number(a.isDefault))
       return sorted
     } catch (err) {
       logger.error('Failed to fetch profiles:', err)
-      return null
+      return []
     }
   })
 

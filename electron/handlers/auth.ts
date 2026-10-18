@@ -9,7 +9,7 @@ const sessionPath = path.join(app.getPath('userData'), 'session.json')
 
 export type IAuthResponse = { success: true; account: Account } | { success: false; error: string }
 
-export function registerAuthHandlers(mainWindow: Electron.BrowserWindow) {
+export function registerAuthHandlers(mainWindow: Electron.BrowserWindow): MicrosoftAuth {
   const auth = new MicrosoftAuth(mainWindow)
 
   ipcMain.handle('auth:login', async () => {
@@ -54,6 +54,8 @@ export function registerAuthHandlers(mainWindow: Electron.BrowserWindow) {
     }
     return { success: true }
   })
+
+  return auth
 }
 
 
